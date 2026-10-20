@@ -1,0 +1,22 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# PyInstaller build output (rebuild with the command in README.md)
+build/
+dist/
+*.spec
+
+# Editors and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Aseprite backup/temp files (keep your .aseprite source files)
+*.aseprite~
