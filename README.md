@@ -41,10 +41,11 @@ python main.py
 ## Building the .exe
 
 ```bash
-pyinstaller --onefile --windowed --name PingPongGod main.py
+pyinstaller --onefile --windowed --name PingPongGod --add-data "assets;assets" main.py
 ```
 
-The executable is created in `dist/`.
+The executable is created in `dist/`. `--add-data` bundles the art into the exe
+(on macOS/Linux write `assets:assets`).
 
 ## Project layout
 
@@ -52,7 +53,9 @@ The executable is created in `dist/`.
 |--------------------|----------------------------------------------------------|
 | `main.py`          | Window, pixel-perfect scaling and the main loop          |
 | `settings.py`      | Palette, controls, positions and all gameplay timings     |
-| `match.py`         | The rally state machine, input and placeholder drawing    |
+| `match.py`         | The rally state machine, input and drawing                |
+| `sprites.py`       | Loads Aseprite sprite sheets and recolours them           |
+| `assets/`          | Aseprite sources (`.aseprite`) and exported sheets        |
 | `nes_palette.hex`  | Game palette, also loadable in Aseprite                   |
 
 The game renders to a 256×224 canvas and scales it up 3× for crisp pixels.
@@ -60,7 +63,8 @@ The game renders to a 256×224 canvas and scales it up 3× for crisp pixels.
 ## Roadmap
 
 - [x] Playable prototype: telegraphed shots, hit window, scoring
-- [ ] Aseprite sprites and swing animations
+- [x] Player sprite (idle)
+- [ ] Swing animations
 - [ ] Title screen and level select
 - [ ] Level 1: tutorial
 - [ ] Levels 2–4: opponents with tricks (decoy balls, reversed shots, ...) ending in a boss

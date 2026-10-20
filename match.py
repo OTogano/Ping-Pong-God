@@ -16,6 +16,7 @@ import random
 import pygame
 
 import settings as S
+from sprites import Animator, load_animations, recolour
 
 
 def lerp(a, b, t):
@@ -29,16 +30,18 @@ def lerp_pt(p, q, t):
 class Match:
     def __init__(self):
         self.font = pygame.font.Font(None, 16)
+        anims = load_animations("player")
+        self.player_anim = Animator(anims)
+        self.opp_anim = Animator(recolour(anims, S.OPPONENT_KIT))
         self.player_score = 0
         self.opp_score = 0
         self.player_pos = 1  # player rests at bottom left
         self.opp_pos = S.SERVE_POSITION
-        self.swing_timer = 0.0
         self.message = ""
         self.last_target = None  # shown briefly after a miss so you learn the rule
         self._start_point()
 
-    # phases
+    # ------------------------------------------------------------------ phases
     def _set_phase(self, name, duration):
         self.phase = name
         self.duration = duration
@@ -55,6 +58,7 @@ class Match:
 
     def _opponent_hits(self):
         self.target = S.LANDING_FOR[self.opp_pos]
+        self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
         self.flight = (
             S.OPPONENT_HIT[self.opp_pos],
             S.PLAYER_BOUNCE[self.target],
@@ -105,7 +109,7 @@ class Match:
         elif self.phase == "point":
             self._start_point()
 
-    # input
+    # ------------------------------------------------------------------ input
     def handle_event(self, event):
         if event.type != pygame.KEYDOWN:
             return
@@ -119,7 +123,7 @@ class Match:
         # The player sprite always jumps to the pressed spot and swings,
         # even on a miss, so the controls feel responsive.
         self.player_pos = pressed
-        self.swing_timer = S.SWING_TIME
+        self.player_anim.play(f"swing_{'dfjk'[pressed]}")
 
         if self.phase == "incoming" and S.EARLY_PRESS_IS_MISS:
             self._point(False, "Too early!")
@@ -129,9 +133,14 @@ class Match:
             else:
                 self._point(False, "Wrong side!")
 
-    # update
+    # ------------------------------------------------------------------ update
     def update(self, dt):
-        self.swing_timer = max(0.0, self.swing_timer - dt)
+        # Crouch in the "ready" pose while the ball is yours to hit.
+        self.player_anim.loop(
+            "ready" if self.phase in ("incoming", "window") else "idle"
+        )
+        self.player_anim.update(dt)
+        self.opp_anim.update(dt)
         self.t += dt
 
         if self.phase in ("incoming", "window", "return"):
@@ -146,24 +155,23 @@ class Match:
         if self.t >= self.duration:
             self._advance()
 
-    # draw
+    # ------------------------------------------------------------------ draw
     def draw(self, surf):
         surf.fill(S.COL_FLOOR)
         self._draw_table(surf)
         if self.last_target is not None:
             # After a miss, outline the correct spot so the rule is learnable.
             x, y = S.PLAYER_STAND[self.last_target]
-            pygame.draw.rect(surf, S.COL_HIGHLIGHT, (x - 10, y - 7, 20, 14), 1)
-        self._draw_person(
-            surf, S.OPPONENT_STAND[self.opp_pos], S.COL_OPPONENT, facing=1, swing=False
-        )
-        self._draw_person(
-            surf,
-            S.PLAYER_STAND[self.player_pos],
-            S.COL_PLAYER,
-            facing=-1,
-            swing=self.swing_timer > 0,
-        )
+            half = S.SPRITE_SIZE // 2
+            pygame.draw.rect(
+                surf,
+                S.COL_HIGHLIGHT,
+                (x - half, y - half, S.SPRITE_SIZE, S.SPRITE_SIZE),
+                1,
+            )
+        # Opponent first so the ball and player draw over them.
+        self._draw_sprite(surf, self.opp_anim.image, S.OPPONENT_STAND[self.opp_pos])
+        self._draw_sprite(surf, self.player_anim.image, S.PLAYER_STAND[self.player_pos])
         self._draw_ball(surf)
         self._draw_hud(surf)
 
@@ -174,29 +182,25 @@ class Match:
         pygame.draw.line(surf, S.COL_LINES, (x + w // 2, y), (x + w // 2, y + h - 1))
         pygame.draw.line(surf, S.COL_NET, (x - 4, S.NET_Y), (x + w + 3, S.NET_Y), 2)
 
-    def _draw_person(self, surf, pos, colour, facing, swing):
-        # Placeholder sprite: a body block plus a paddle that reaches toward
-        # the table when swinging. Aseprite art replaces this next session.
-        x, y = pos
-        pygame.draw.rect(surf, colour, (x - 8, y - 5, 16, 10))
-        reach = 9 if swing else 4
-        cx = S.TABLE[0] + S.TABLE[2] // 2
-        dx = 0 if abs(x - cx) < 60 else (reach if x < cx else -reach)
-        dy = facing * reach if dx == 0 else 0
-        pygame.draw.circle(surf, S.COL_PADDLE, (x + dx, y + dy), 3)
+    def _draw_sprite(self, surf, image, pos):
+        """Draw a character's current animation frame centred on pos."""
+        surf.blit(image, image.get_rect(center=pos))
 
     def _draw_ball(self, surf):
         if self.phase in ("point", "over"):
             return
         bx, by = self.ball
         pygame.draw.ellipse(surf, S.COL_SHADOW, (bx - 3, by - 1, 6, 3))
-        pygame.draw.circle(surf, S.COL_BALL, (round(bx), round(by - self.ball_h)), 3)
+        centre = (round(bx), round(by - self.ball_h))
+        pygame.draw.circle(surf, S.COL_BALL_OUTLINE, centre, 3)
+        pygame.draw.circle(surf, S.COL_BALL, centre, 2)
 
     def _draw_hud(self, surf):
-        text = self.font.render(
-            f"YOU {self.player_score}  -  {self.opp_score} CPU", False, S.COL_TEXT
-        )
-        surf.blit(text, (4, 4))
+        # Scores sit in the left margin: CPU on their half, YOU on yours.
+        cpu = self.font.render(f"CPU {self.opp_score}", False, S.COL_TEXT)
+        you = self.font.render(f"YOU {self.player_score}", False, S.COL_TEXT)
+        surf.blit(cpu, (4, S.NET_Y - 14))
+        surf.blit(you, (4, S.NET_Y + 4))
         if self.message:
             msg = self.font.render(self.message, False, S.COL_TEXT)
             surf.blit(msg, msg.get_rect(center=(S.WIDTH // 2, S.NET_Y - 12)))
