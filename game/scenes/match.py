@@ -41,6 +41,12 @@ class Match(Scene):
         self.level_index = level_index
         self.level = LEVELS[level_index]
         self.font = BitmapFont()
+        # The level's stage, drawn under everything (plain floor colour if it has none).
+        self.background = (
+            load_image("backgrounds", f"{self.level.background}.png")
+            if self.level.background
+            else None
+        )
         self.table = load_image("sprites", "table.png")
         self.net = load_image("sprites", "net.png")
         self.ball_img, self.ball_squash, self.ball_shadow = load_strip(
@@ -135,7 +141,10 @@ class Match(Scene):
             fx.shake(*S.MISS_SHAKE)
         self.scoreboard.set(self.opp_score, self.player_score)
         self.message = message
-        self.opp_anim.play("point_lost" if player_won else "point_won")
+        self.opp_anim.after("point_lost" if player_won else "point_won")
+        self.player_anim.after(
+            "point_won" if player_won else "point_lost"
+        )  # after his swing finishes
         if self.level.points_to_win in (self.player_score, self.opp_score):
             self.won = player_won
             self.opp_anim.switch("match_lost" if player_won else "match_won")
@@ -234,9 +243,10 @@ class Match(Scene):
     # ------------------------------------------------------------------ update
     def update(self, dt):
         # Crouch in the "ready" pose while the ball is yours to hit.
-        self.player_anim.loop(
-            "ready" if self.phase in ("incoming", "window") else "idle"
-        )
+        if self.phase not in ("over", "done"):
+            self.player_anim.loop(
+                "ready" if self.phase in ("incoming", "window") else "idle"
+            )
         self.player_anim.update(dt)
         if self.phase not in ("windup", "over", "done"):
             self.opp_anim.loop("idle")
@@ -267,7 +277,10 @@ class Match(Scene):
 
     # ------------------------------------------------------------------ draw
     def draw(self, surf):
-        surf.fill(S.COL_FLOOR)
+        if self.background:
+            surf.blit(self.background, (0, 0))
+        else:
+            surf.fill(S.COL_FLOOR)
         # The opponent stands behind the table, so draw them first: their feet
         # tuck behind its far edge.
         opp = self.opp_anim.image
@@ -279,7 +292,8 @@ class Match(Scene):
         # After a miss, the correct key stays lit so the rule is learnable.
         self.keys.draw(surf, lit=self._hint_key())
         # Opponent first so the ball and player draw over them.
-        self._draw_sprite(surf, self.player_anim.image, S.PLAYER_STAND[self.player_pos])
+        me = self.player_anim.image
+        surf.blit(me, me.get_rect(midbottom=S.PLAYER_FEET[self.player_pos]))
         self._draw_ball(surf)
         if self.message:
             self.font.draw(surf, self.message, (S.WIDTH // 2, S.MESSAGE_Y))
@@ -293,10 +307,6 @@ class Match(Scene):
         if self.last_target is not None:  # after a miss, show which key was right
             return self.last_target
         return None
-
-    def _draw_sprite(self, surf, image, pos):
-        """Draw a character's current animation frame centred on pos."""
-        surf.blit(image, image.get_rect(center=pos))
 
     def _ball_visible(self):
         return self.phase not in ("point", "over", "done")

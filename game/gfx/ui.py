@@ -99,12 +99,14 @@ class KeyIcons:
             for k in range(4)
         ]
         self.pressed = [0.0] * 4
+        self.time = 0.0
 
     def press(self, index):
         self.pressed[index] = S.KEY_PRESS_SHOW
 
     def update(self, dt):
         self.pressed = [max(0.0, t - dt) for t in self.pressed]
+        self.time += dt
 
     def draw(self, surf, lit=None):
         for i, pos in enumerate(S.KEY_ICON_POS):
@@ -114,6 +116,15 @@ class KeyIcons:
                 else (self.LIT if i == lit else self.NORMAL)
             )
             surf.blit(self.icons[i][state], pos)
+            # A blinking ring around the lit key so it catches the eye mid-rally.
+            if state == self.LIT and int(self.time * S.KEY_RING_BLINK * 2) % 2 == 0:
+                size = self.icons[i][state].get_width()
+                pygame.draw.rect(
+                    surf,
+                    S.COL_KEY_RING,
+                    (pos[0] - 1, pos[1] - 1, size + 2, size + 2),
+                    1,
+                )
 
 
 class Menu:

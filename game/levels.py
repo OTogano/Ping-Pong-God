@@ -46,6 +46,7 @@ LEVELS = [
         hints_until_score=1,
         sprite="coach_greg",
         portrait="coach_greg_portrait",
+        background="gym_floor",
         special="belly",
         special_chance=0.2,
     ),  # belly bump on 1 in 5 centre shots,

@@ -110,6 +110,9 @@ class Animator:
 
     loop(name)  - keep repeating an animation (idle, ready)
     play(name)  - play once, then go back to whatever was looping
+
+    after(name, loop=False) - like play/switch, but waits for a running play-once to finish
+    (so a swing isn't cut off by the reaction to the point it decided)
     """
 
     def __init__(self, anims, start="idle"):
@@ -119,6 +122,7 @@ class Animator:
         self.once = False
         self.index = 0
         self.time = 0.0
+        self.queued = None  # (name, loop) to start when the current play-once ends
 
     def _start(self, name, once):
         if name not in self.anims:  # missing art: just keep the idle pose
@@ -126,6 +130,7 @@ class Animator:
         self.current, self.once, self.index, self.time = name, once, 0, 0.0
 
     def play(self, name):
+        self.queued = None
         self._start(name, once=True)
 
     def loop(self, name):
@@ -138,8 +143,17 @@ class Animator:
     def switch(self, name):
         if name not in self.anims:
             name = "idle"
+        self.queued = None
         self.looping = name
         self._start(name, once=False)
+
+    def after(self, name, loop=False):
+        if self.once:
+            self.queued = (name, loop)
+        elif loop:
+            self.switch(name)
+        else:
+            self.play(name)
 
     @property
     def busy(self):
@@ -153,7 +167,14 @@ class Animator:
             self.time -= frames[self.index][1]
             self.index += 1
             if self.index >= len(frames):
-                if self.once:
+                if self.once and self.queued:
+                    name, loop = self.queued
+                    self.queued = None
+                    if loop:
+                        self.looping = name if name in self.anims else "idle"
+                    self._start(name, once=not loop)
+                    frames = self.anims[self.current]
+                elif self.once:
                     self._start(self.looping, once=False)
                     frames = self.anims[self.current]
                 else:
