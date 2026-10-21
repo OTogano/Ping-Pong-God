@@ -125,5 +125,6 @@ WINDOW_ARC = 6  # small hop after the bounce
 
 def resource_path(relative):
     """Find asset files both when run from source and from a PyInstaller exe."""
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", root)
     return os.path.join(base, relative)

@@ -14,15 +14,15 @@ import os
 
 import pygame
 
-import settings as S
+from game import settings as S
 
 
 def load_animations(name):
     """Load assets/<name>.png (+ .json) into {tag: [(surface, seconds), ...]}."""
-    png = S.resource_path(os.path.join("assets", f"{name}.png"))
+    png = S.resource_path(os.path.join("assets", "sprites", f"{name}.png"))
     sheet = pygame.image.load(png).convert_alpha()
 
-    jsn = S.resource_path(os.path.join("assets", f"{name}.json"))
+    jsn = S.resource_path(os.path.join("assets", "sprites", f"{name}.json"))
     data = {}
     if os.path.exists(jsn):
         with open(jsn, encoding="utf-8") as f:

@@ -2,8 +2,8 @@ import sys
 
 import pygame
 
-import settings as S
-from match import Match
+from game import settings as S
+from game.scenes.match import Match
 
 
 def main():

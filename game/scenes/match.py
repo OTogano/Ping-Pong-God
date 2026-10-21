@@ -15,8 +15,8 @@ import random
 
 import pygame
 
-import settings as S
-from sprites import Animator, load_animations, recolour
+from game import settings as S
+from game.gfx.sprites import Animator, load_animations, recolour
 
 
 def lerp(a, b, t):
