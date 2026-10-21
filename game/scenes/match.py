@@ -17,7 +17,9 @@ import pygame
 
 from game import settings as S
 from game.gfx.effects import fx
-from game.gfx.sprites import Animator, load_animations, recolour
+from game.gfx.sprites import Animator, load_animations, load_image, load_strip, recolour
+from game.gfx.text import BitmapFont
+from game.gfx.ui import KeyIcons, Scoreboard
 
 
 def lerp(a, b, t):
@@ -30,7 +32,16 @@ def lerp_pt(p, q, t):
 
 class Match:
     def __init__(self):
-        self.font = pygame.font.Font(None, 16)
+        self.font = BitmapFont()
+        self.table = load_image("sprites", "table.png")
+        self.net = load_image("sprites", "net.png")
+        self.ball_img, self.ball_squash, self.ball_shadow = load_strip(
+            "sprites/ball.png", S.BALL_SIZE
+        )
+        self.scoreboard = Scoreboard()
+        self.keys = KeyIcons()
+        self.returns = 0  # successful returns this match (key hints fade after a few)
+        self.squash = 0.0
         anims = load_animations("player")
         self.player_anim = Animator(anims)
         self.opp_anim = Animator(recolour(anims, S.OPPONENT_KIT))
@@ -40,6 +51,9 @@ class Match:
         self.opp_pos = S.SERVE_POSITION
         self.message = ""
         self.last_target = None  # shown briefly after a miss so you learn the rule
+        # Rally state; _start_point() and _set_phase() fill these in.
+        self.phase, self.duration, self.t = "ready", 0.0, 0.0
+        self.flight = ((0.0, 0.0), (0.0, 0.0), 0.0)  # (start, end, arc height)
         self._start_point()
 
     # ------------------------------------------------------------------ phases
@@ -70,6 +84,7 @@ class Match:
     def _player_returns(self):
         # The opponent moves to their next spot as the ball travels:
         # that movement IS the telegraph for the next shot.
+        self.returns += 1
         self.opp_pos = random.randrange(4)
         self.flight = (self.ball, S.OPPONENT_HIT[self.opp_pos], S.BALL_ARC)
         self._set_phase("return", S.RETURN_TIME)
@@ -81,10 +96,11 @@ class Match:
             self.opp_score += 1
             self.last_target = self.target
             fx.shake(*S.MISS_SHAKE)
+        self.scoreboard.set(self.opp_score, self.player_score)
         self.message = message
         if S.POINTS_TO_WIN in (self.player_score, self.opp_score):
             winner = "You win!" if player_won else "You lose!"
-            self.message = f"{message}  {winner}  (R to restart)"
+            self.message = f"{message}\n{winner}\nPress R to restart"
             self._set_phase("over", math.inf)
         else:
             self._set_phase("point", S.POINT_PAUSE)
@@ -100,6 +116,7 @@ class Match:
                 S.PLAYER_HIT[self.target],
                 S.WINDOW_ARC,
             )
+            self.squash = S.BALL_SQUASH_TIME  # the ball just bounced on your side
             self._set_phase("window", S.HIT_WINDOW)
         elif self.phase == "window":
             self._point(False, "Too late!")
@@ -125,6 +142,7 @@ class Match:
         # The player sprite always jumps to the pressed spot and swings,
         # even on a miss, so the controls feel responsive.
         self.player_pos = pressed
+        self.keys.press(pressed)
         self.player_anim.play(f"swing_{'dfjk'[pressed]}")
 
         if self.phase == "incoming" and S.EARLY_PRESS_IS_MISS:
@@ -144,6 +162,9 @@ class Match:
         )
         self.player_anim.update(dt)
         self.opp_anim.update(dt)
+        self.scoreboard.update(dt)
+        self.keys.update(dt)
+        self.squash = max(0.0, self.squash - dt)
         self.t += dt
 
         if self.phase in ("incoming", "window", "return"):
@@ -161,49 +182,48 @@ class Match:
     # ------------------------------------------------------------------ draw
     def draw(self, surf):
         surf.fill(S.COL_FLOOR)
-        self._draw_table(surf)
-        if self.last_target is not None:
-            # After a miss, outline the correct spot so the rule is learnable.
-            x, y = S.PLAYER_STAND[self.last_target]
-            half = S.SPRITE_SIZE // 2
-            pygame.draw.rect(
-                surf,
-                S.COL_HIGHLIGHT,
-                (x - half, y - half, S.SPRITE_SIZE, S.SPRITE_SIZE),
-                1,
-            )
+        surf.blit(self.table, S.TABLE_SPRITE_POS)
+        self._draw_ball_shadow(surf)
+        surf.blit(self.net, S.NET_SPRITE_POS)
+        self.scoreboard.draw(surf)
+        # After a miss, the correct key stays lit so the rule is learnable.
+        self.keys.draw(surf, lit=self._hint_key())
         # Opponent first so the ball and player draw over them.
         self._draw_sprite(surf, self.opp_anim.image, S.OPPONENT_STAND[self.opp_pos])
         self._draw_sprite(surf, self.player_anim.image, S.PLAYER_STAND[self.player_pos])
         self._draw_ball(surf)
-        self._draw_hud(surf)
+        if self.message:
+            self.font.draw(surf, self.message, (S.WIDTH // 2, S.MESSAGE_Y))
 
-    def _draw_table(self, surf):
-        x, y, w, h = S.TABLE
-        pygame.draw.rect(surf, S.COL_TABLE, S.TABLE)
-        pygame.draw.rect(surf, S.COL_LINES, S.TABLE, 1)
-        pygame.draw.line(surf, S.COL_LINES, (x + w // 2, y), (x + w // 2, y + h - 1))
-        pygame.draw.line(surf, S.COL_NET, (x - 4, S.NET_Y), (x + w + 3, S.NET_Y), 2)
+    def _hint_key(self):
+        """Which key icon to light up: the right answer for the incoming shot."""
+        hints_on = S.KEY_HINTS and (
+            S.KEY_HINT_RETURNS is None or self.returns < S.KEY_HINT_RETURNS
+        )
+        if hints_on and self.phase in ("incoming", "window"):
+            return self.target
+        if self.last_target is not None:  # after a miss, show which key was right
+            return self.last_target
+        return None
 
     def _draw_sprite(self, surf, image, pos):
         """Draw a character's current animation frame centred on pos."""
         surf.blit(image, image.get_rect(center=pos))
 
+    def _ball_visible(self):
+        return self.phase not in ("point", "over")
+
+    def _draw_ball_shadow(self, surf):
+        if self._ball_visible():
+            bx, by = self.ball
+            surf.blit(
+                self.ball_shadow,
+                self.ball_shadow.get_rect(center=(round(bx), round(by))),
+            )
+
     def _draw_ball(self, surf):
-        if self.phase in ("point", "over"):
+        if not self._ball_visible():
             return
         bx, by = self.ball
-        pygame.draw.ellipse(surf, S.COL_SHADOW, (bx - 3, by - 1, 6, 3))
-        centre = (round(bx), round(by - self.ball_h))
-        pygame.draw.circle(surf, S.COL_BALL_OUTLINE, centre, 3)
-        pygame.draw.circle(surf, S.COL_BALL, centre, 2)
-
-    def _draw_hud(self, surf):
-        # Scores sit in the left margin: CPU on their half, YOU on yours.
-        cpu = self.font.render(f"CPU {self.opp_score}", False, S.COL_TEXT)
-        you = self.font.render(f"YOU {self.player_score}", False, S.COL_TEXT)
-        surf.blit(cpu, (4, S.NET_Y - 14))
-        surf.blit(you, (4, S.NET_Y + 4))
-        if self.message:
-            msg = self.font.render(self.message, False, S.COL_TEXT)
-            surf.blit(msg, msg.get_rect(center=(S.WIDTH // 2, S.NET_Y - 12)))
+        image = self.ball_squash if self.squash > 0 else self.ball_img
+        surf.blit(image, image.get_rect(center=(round(bx), round(by - self.ball_h))))

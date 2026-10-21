@@ -17,6 +17,23 @@ import pygame
 from game import settings as S
 
 
+def load_image(*parts):
+    """Load one image from assets/, e.g. load_image("ui", "keys.png")."""
+    return pygame.image.load(
+        S.resource_path(os.path.join("assets", *parts))
+    ).convert_alpha()
+
+
+def load_strip(path, frame_w):
+    """Cut assets/<path> (a horizontal strip) into frames frame_w wide."""
+    sheet = load_image(path)
+    h = sheet.get_height()
+    return [
+        sheet.subsurface((x, 0, frame_w, h)).copy()
+        for x in range(0, sheet.get_width() - frame_w + 1, frame_w)
+    ]
+
+
 def load_animations(name):
     """Load assets/<name>.png (+ .json) into {tag: [(surface, seconds), ...]}."""
     png = S.resource_path(os.path.join("assets", "sprites", f"{name}.png"))

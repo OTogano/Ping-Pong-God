@@ -57,14 +57,8 @@ NES_PALETTE = [
 # Named colours used by the game. Change the look by changing these lines only.
 COL_BG = "#000000"
 COL_FLOOR = "#503000"
-COL_TABLE = "#0058F8"
-COL_LINES = "#BCBCBC"
-COL_NET = "#BCBCBC"
-COL_SHADOW = "#0000BC"
-COL_BALL = "#BCBCBC"  # light ball so it never blends into the orange hat
-COL_BALL_OUTLINE = "#000000"
-COL_TEXT = "#BCBCBC"
-COL_HIGHLIGHT = "#AC7C00"
+COL_CARD = "#BCBCBC"  # flip-board card face (must match scoreboard.png)
+COL_CARD_EDGE = "#7C7C7C"
 
 # ---------------------------------------------------------------------------
 # Controls: index 0..3 = left edge, bottom left, bottom right, right edge
@@ -93,6 +87,16 @@ SERVE_POSITION = 1  # opponent always serves from top left
 MISS_SHAKE = (3, 0.3)
 RETURN_FLASH = 0.25
 
+# HUD and feedback
+KEY_HINTS = True  # light the key for the incoming shot (tutorial)
+KEY_HINT_RETURNS = (
+    5  # stop lighting after this many returns in a match; None = never stop
+)
+KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
+BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
+FLIP_TIME = 0.25  # flip-board card animation
+MESSAGE_Y = 70  # where messages like "Too late!" appear
+
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)
 # ---------------------------------------------------------------------------
@@ -115,6 +119,14 @@ OPPONENT_STAND = [(56, 64), (104, 16), (152, 16), (200, 64)]
 OPPONENT_HIT = [(84, 64), (104, 40), (152, 40), (172, 64)]
 PLAYER_BOUNCE = [(88, 160), (104, 172), (152, 172), (168, 160)]
 PLAYER_HIT = [(76, 154), (110, 192), (158, 192), (192, 154)]
+
+# Sprite positions for the art in assets/ (top-left corners, canvas pixels).
+# table.png's blue surface starts 1px in, so it lines up exactly with TABLE.
+TABLE_SPRITE_POS = (TABLE[0] - 1, TABLE[1] - 1)
+NET_SPRITE_POS = (TABLE[0] - 5, NET_Y - 2)  # white tape sits on NET_Y
+SCOREBOARD_POS = (0, 86)
+KEY_ICON_POS = [(48, 178), (66, 200), (174, 200), (192, 178)]  # beside D F J K spots
+BALL_SIZE = 7  # ball.png frames: ball, squashed ball, shadow
 
 # Until opponents get their own art, they wear your sprite in a different kit.
 OPPONENT_KIT = {"#004058": "#940084", "#E45C10": "#00A844", "#F83800": "#00B800"}
