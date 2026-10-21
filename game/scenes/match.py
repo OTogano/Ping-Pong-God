@@ -41,6 +41,12 @@ class Match(Scene):
         self.level_index = level_index
         self.level = LEVELS[level_index]
         self.font = BitmapFont()
+        # The level's stage, drawn under everything (plain floor colour if it has none).
+        self.background = (
+            load_image("backgrounds", f"{self.level.background}.png")
+            if self.level.background
+            else None
+        )
         self.table = load_image("sprites", "table.png")
         self.net = load_image("sprites", "net.png")
         self.ball_img, self.ball_squash, self.ball_shadow = load_strip(
@@ -51,7 +57,16 @@ class Match(Scene):
         self.squash = 0.0
         anims = load_animations("player")
         self.player_anim = Animator(anims)
-        self.opp_anim = Animator(recolour(anims, self.level.kit))
+        # Opponents with their own art load it; the rest wear the player's sprite in their kit.
+        opp_anims = (
+            load_animations(self.level.sprite)
+            if self.level.sprite
+            else recolour(anims, self.level.kit)
+        )
+        self.opp_anim = Animator(opp_anims)
+        self.special = (
+            False  # is the coming shot the opponent's showy special (e.g. belly bump)?
+        )
         self.player_score = 0
         self.opp_score = 0
         self.player_pos = 1  # player rests at bottom left
@@ -80,11 +95,29 @@ class Match(Scene):
         self.ball_h = 0
         self.message = ""
         self.last_target = None
+        self.special = False
+        self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
         self._set_phase("ready", S.READY_TIME)
+
+    def _begin_windup(self):
+        """The opponent stands at their spot and winds up: this is the telegraph."""
+        self.target = S.LANDING_FOR[self.opp_pos]
+        lvl = self.level
+        self.special = (
+            lvl.special is not None
+            and self.target in (1, 2)
+            and random.random() < lvl.special_chance
+        )
+        # A special has its own windup pose (Greg leans back before a belly bump).
+        self.opp_anim.switch(f"windup_{lvl.special}" if self.special else "windup")
+        self._set_phase("windup", lvl.windup_time)
 
     def _opponent_hits(self):
         self.target = S.LANDING_FOR[self.opp_pos]
-        self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
+        if self.special and self.level.special:
+            self.opp_anim.play(self.level.special)
+        else:
+            self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
         self.flight = (
             S.OPPONENT_HIT[self.opp_pos],
             S.PLAYER_BOUNCE[self.target],
@@ -108,8 +141,13 @@ class Match(Scene):
             fx.shake(*S.MISS_SHAKE)
         self.scoreboard.set(self.opp_score, self.player_score)
         self.message = message
+        self.opp_anim.after("point_lost" if player_won else "point_won")
+        self.player_anim.after(
+            "point_won" if player_won else "point_lost"
+        )  # after his swing finishes
         if self.level.points_to_win in (self.player_score, self.opp_score):
             self.won = player_won
+            self.opp_anim.switch("match_lost" if player_won else "match_won")
             self.message = f"{message}\n{'You win!' if player_won else 'You lose!'}"
             if player_won and self.app:
                 self.unlocked = self.app.progress.mark_won(self.level_index)
@@ -120,7 +158,7 @@ class Match(Scene):
     def _advance(self):
         if self.phase == "ready":
             self.message = ""  # clears the level name after the first serve
-            self._set_phase("windup", self.level.windup_time)
+            self._begin_windup()
         elif self.phase == "windup":
             self._opponent_hits()
         elif self.phase == "incoming":
@@ -137,7 +175,7 @@ class Match(Scene):
             if random.random() < self.level.opponent_miss_chance:
                 self._point(True, "Opponent missed!")
             else:
-                self._set_phase("windup", self.level.windup_time)
+                self._begin_windup()
         elif self.phase == "point":
             self._start_point()
         elif self.phase == "over":
@@ -205,10 +243,20 @@ class Match(Scene):
     # ------------------------------------------------------------------ update
     def update(self, dt):
         # Crouch in the "ready" pose while the ball is yours to hit.
-        self.player_anim.loop(
-            "ready" if self.phase in ("incoming", "window") else "idle"
-        )
+        if self.phase not in ("over", "done"):
+            self.player_anim.loop(
+                "ready" if self.phase in ("incoming", "window") else "idle"
+            )
         self.player_anim.update(dt)
+        if self.phase not in ("windup", "over", "done"):
+            self.opp_anim.loop("idle")
+            # Now and then, while waiting, the opponent wipes their brow (if they have a "mop").
+            if (
+                self.phase in ("ready", "point")
+                and not self.opp_anim.busy
+                and random.random() < S.MOP_CHANCE * dt
+            ):
+                self.opp_anim.play("mop")
         self.opp_anim.update(dt)
         self.scoreboard.update(dt)
         self.keys.update(dt)
@@ -229,7 +277,14 @@ class Match(Scene):
 
     # ------------------------------------------------------------------ draw
     def draw(self, surf):
-        surf.fill(S.COL_FLOOR)
+        if self.background:
+            surf.blit(self.background, (0, 0))
+        else:
+            surf.fill(S.COL_FLOOR)
+        # The opponent stands behind the table, so draw them first: their feet
+        # tuck behind its far edge.
+        opp = self.opp_anim.image
+        surf.blit(opp, opp.get_rect(midbottom=S.OPPONENT_FEET[self.opp_pos]))
         surf.blit(self.table, S.TABLE_SPRITE_POS)
         self._draw_ball_shadow(surf)
         surf.blit(self.net, S.NET_SPRITE_POS)
@@ -237,8 +292,8 @@ class Match(Scene):
         # After a miss, the correct key stays lit so the rule is learnable.
         self.keys.draw(surf, lit=self._hint_key())
         # Opponent first so the ball and player draw over them.
-        self._draw_sprite(surf, self.opp_anim.image, S.OPPONENT_STAND[self.opp_pos])
-        self._draw_sprite(surf, self.player_anim.image, S.PLAYER_STAND[self.player_pos])
+        me = self.player_anim.image
+        surf.blit(me, me.get_rect(midbottom=S.PLAYER_FEET[self.player_pos]))
         self._draw_ball(surf)
         if self.message:
             self.font.draw(surf, self.message, (S.WIDTH // 2, S.MESSAGE_Y))
@@ -252,10 +307,6 @@ class Match(Scene):
         if self.last_target is not None:  # after a miss, show which key was right
             return self.last_target
         return None
-
-    def _draw_sprite(self, surf, image, pos):
-        """Draw a character's current animation frame centred on pos."""
-        surf.blit(image, image.get_rect(center=pos))
 
     def _ball_visible(self):
         return self.phase not in ("point", "over", "done")

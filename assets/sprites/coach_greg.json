@@ -1,0 +1,458 @@
+{
+ "frames": [
+  {
+   "filename": "coach_greg 0.aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "coach_greg 1.aseprite",
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "coach_greg 2.aseprite",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "coach_greg 3.aseprite",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "coach_greg 4.aseprite",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 5.aseprite",
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 6.aseprite",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 7.aseprite",
+   "frame": {
+    "x": 280,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 8.aseprite",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 120
+  },
+  {
+   "filename": "coach_greg 9.aseprite",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "coach_greg 10.aseprite",
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "coach_greg 11.aseprite",
+   "frame": {
+    "x": 440,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "coach_greg 12.aseprite",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "coach_greg 13.aseprite",
+   "frame": {
+    "x": 520,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 14.aseprite",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "coach_greg 15.aseprite",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 16.aseprite",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "coach_greg 17.aseprite",
+   "frame": {
+    "x": 680,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 18.aseprite",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "coach_greg 19.aseprite",
+   "frame": {
+    "x": 760,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 20.aseprite",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 180
+  },
+  {
+   "filename": "coach_greg 21.aseprite",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "coach_greg 22.aseprite",
+   "frame": {
+    "x": 880,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 180
+  },
+  {
+   "filename": "coach_greg 23.aseprite",
+   "frame": {
+    "x": 920,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 180
+  },
+  {
+   "filename": "coach_greg 24.aseprite",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 180
+  },
+  {
+   "filename": "coach_greg 25.aseprite",
+   "frame": {
+    "x": 1000,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 180
+  },
+  {
+   "filename": "coach_greg 26.aseprite",
+   "frame": {
+    "x": 1040,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "coach_greg 27.aseprite",
+   "frame": {
+    "x": 1080,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "coach_greg 28.aseprite",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "coach_greg 29.aseprite",
+   "frame": {
+    "x": 1160,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "coach_greg 30.aseprite",
+   "frame": {
+    "x": 1200,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 170
+  },
+  {
+   "filename": "coach_greg 31.aseprite",
+   "frame": {
+    "x": 1240,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 170
+  },
+  {
+   "filename": "coach_greg 32.aseprite",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 170
+  },
+  {
+   "filename": "coach_greg 33.aseprite",
+   "frame": {
+    "x": 1320,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 170
+  },
+  {
+   "filename": "coach_greg 34.aseprite",
+   "frame": {
+    "x": 1360,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 600
+  },
+  {
+   "filename": "coach_greg 35.aseprite",
+   "frame": {
+    "x": 1400,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 900
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "coach_greg.png",
+  "size": {
+   "w": 1440,
+   "h": 40
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   },
+   {
+    "name": "mop",
+    "from": 4,
+    "to": 7,
+    "direction": "forward"
+   },
+   {
+    "name": "serve",
+    "from": 8,
+    "to": 9,
+    "direction": "forward"
+   },
+   {
+    "name": "windup",
+    "from": 10,
+    "to": 10,
+    "direction": "forward"
+   },
+   {
+    "name": "windup_belly",
+    "from": 11,
+    "to": 11,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_d",
+    "from": 12,
+    "to": 13,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_f",
+    "from": 14,
+    "to": 15,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_j",
+    "from": 16,
+    "to": 17,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_k",
+    "from": 18,
+    "to": 19,
+    "direction": "forward"
+   },
+   {
+    "name": "belly",
+    "from": 20,
+    "to": 21,
+    "direction": "forward"
+   },
+   {
+    "name": "point_won",
+    "from": 22,
+    "to": 25,
+    "direction": "forward"
+   },
+   {
+    "name": "point_lost",
+    "from": 26,
+    "to": 29,
+    "direction": "forward"
+   },
+   {
+    "name": "match_won",
+    "from": 30,
+    "to": 33,
+    "direction": "forward"
+   },
+   {
+    "name": "match_lost",
+    "from": 34,
+    "to": 35,
+    "direction": "forward"
+   }
+  ]
+ }
+}

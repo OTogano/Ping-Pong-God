@@ -64,6 +64,7 @@ COL_PANEL = "#000000"  # menu box
 COL_PANEL_BORDER = "#BCBCBC"
 COL_GOLD = "#AC7C00"  # highlights: selected card, "You win!", unlocks
 COL_PORTRAIT_BG = "#0000BC"  # square behind portraits on level cards
+COL_KEY_RING = "#BCBCBC"  # blinking ring around the lit key hint
 
 # ---------------------------------------------------------------------------
 # Controls: index 0..3 = left edge, bottom left, bottom right, right edge
@@ -89,10 +90,14 @@ RETURN_FLASH = 0.25
 
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
+KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key
 BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
 FLIP_TIME = 0.25  # flip-board card animation
 MESSAGE_Y = 70  # where messages like "Too late!" appear
 MENU_LINE = 12  # pixels between menu options
+MOP_CHANCE = (
+    0.25  # per second: opponents with a "mop" animation wipe their brow while waiting
+)
 
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)
@@ -105,12 +110,12 @@ TABLE = (
 )  # x, y, width, height (shorter so 32px sprites fit above and below)
 NET_Y = TABLE[1] + TABLE[3] // 2
 
-# Sprites: 32x32 frames from Aseprite, animations named by tags (see sprites.py).
-SPRITE_SIZE = 32
-
-# Where the centre of each sprite stands at each of the 4 positions
-PLAYER_STAND = [(56, 160), (104, 208), (152, 208), (200, 160)]
-OPPONENT_STAND = [(56, 64), (104, 16), (152, 16), (200, 64)]
+# Characters are placed by their feet (bottom-centre of the frame), so sprites of
+# any size line up: the player's 40x40 frames stand on these points.
+PLAYER_FEET = [(56, 176), (104, 224), (152, 224), (200, 176)]
+# Opponents are placed by their feet (bottom-centre of the frame), so sprites of
+# any size line up. At the far end they stand behind the table's far edge.
+OPPONENT_FEET = [(56, 80), (104, 40), (152, 40), (200, 80)]
 
 # Where the ball leaves the opponent, bounces on your half, and meets your paddle
 OPPONENT_HIT = [(84, 64), (104, 40), (152, 40), (172, 64)]
