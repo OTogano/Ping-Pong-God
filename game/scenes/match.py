@@ -36,6 +36,15 @@ def lerp_pt(p, q, t):
     return (lerp(p[0], q[0], t), lerp(p[1], q[1], t))
 
 
+def bezier(p0, p1, p2, p3, t):
+    """Point t (0..1) along a cubic Bezier curve: starts at p0, ends at p3, pulled toward p1 and p2."""
+    u = 1 - t
+    return (
+        u**3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t**3 * p3[0],
+        u**3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t**3 * p3[1],
+    )
+
+
 class Match(Scene):
     def __init__(self, level_index=0):
         self.level_index = level_index
@@ -57,7 +66,7 @@ class Match(Scene):
         self.ball_img, self.ball_squash, self.ball_shadow = load_strip(
             "sprites/ball.png", S.BALL_SIZE
         )
-        self.scoreboard = Scoreboard()
+        self.scoreboard = Scoreboard(self.level.scoreboard_pos)
         self.keys = KeyIcons()
         self.squash = 0.0
         anims = load_animations("player")
@@ -74,6 +83,14 @@ class Match(Scene):
         )
         self.smash = False  # is the coming shot a smash (fast, flaming)?
         self.trail = []  # recent ball positions, for the smash's flame trail
+        self.speed = 1.0  # the coming shot flies this many times faster (juggle shot)
+        self.juggle_path = []  # paddles the ball still has to hop between (Captain Squidy)
+        self.grab = False  # is a tentacle holding the player?
+        self.grab_t = 0.0  # time since the grab started
+        self.grab_out = (
+            0.0  # time left for the tentacle to slither back after letting go
+        )
+        self.grab_lane = 0  # where the player was grabbed
         self.player_score = 0
         self.opp_score = 0
         self.player_pos = 1  # player rests at bottom left
@@ -104,13 +121,22 @@ class Match(Scene):
         self.last_target = None
         self.special = False
         self.smash = False
+        self.speed = 1.0
+        self.juggle_path = []
+        self.grab = False
+        self.grab_out = 0.0
         self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
         self._set_phase("ready", S.READY_TIME)
 
-    def _begin_windup(self):
+    def _begin_windup(self, after_juggle=False):
         """The opponent stands at their spot and winds up: this is the telegraph."""
         self.target = S.LANDING_FOR[self.opp_pos]
         lvl = self.level
+        if not after_juggle:
+            self.speed = 1.0
+            if random.random() < lvl.juggle_chance:
+                self._start_juggle()
+                return
         played = self.player_score + self.opp_score
         self.smash = (
             lvl.smash_chance > 0
@@ -130,8 +156,48 @@ class Match(Scene):
             and random.random() < lvl.special_chance
         )
         # A special has its own windup pose (Greg leans back before a belly bump).
-        self.opp_anim.switch(f"windup_{lvl.special}" if self.special else "windup")
-        self._set_phase("windup", lvl.windup_time)
+        self.opp_anim.switch(self._windup_tag())
+        duration = lvl.windup_time
+        if not after_juggle and random.random() < lvl.grab_chance:
+            self._start_grab()
+            duration += S.GRAB_TELL  # time to see the tentacle coming
+        self._set_phase("windup", duration)
+
+    def _windup_tag(self):
+        if self.special:
+            return f"windup_{self.level.special}"
+        # Opponents who never move (Captain Squidy) wind up the paddle that will hit.
+        lane_tag = f"windup_{'dfjk'[self.opp_pos]}"
+        return lane_tag if self.opp_anim.has(lane_tag) else "windup"
+
+    # ------------------------------------------------------------------ Captain Squidy's tricks
+    def _start_juggle(self):
+        """Bat the ball between paddles; the LAST paddle to touch it takes the shot."""
+        lo, hi = self.level.juggle_hops
+        path = [self.opp_pos]
+        for _ in range(random.randint(lo, hi)):
+            path.append(random.choice([p for p in range(4) if p != path[-1]]))
+        self.juggle_path = path
+        self._juggle_hop()
+
+    def _juggle_hop(self):
+        a, b = self.juggle_path[0], self.juggle_path[1]
+        self.opp_anim.play(f"bat_{'dfjk'[a]}")
+        self.flight = (S.OPPONENT_HIT[a], S.OPPONENT_HIT[b], S.JUGGLE_ARC)
+        self._set_phase("juggle", self.level.juggle_hop_time)
+
+    def _start_grab(self):
+        self.grab = True
+        self.grab_t = 0.0
+        self.grab_lane = self.player_pos
+        self.message = "Grabbed!"
+
+    def _release_grab(self):
+        if self.grab:
+            self.grab = False
+            self.grab_out = S.GRAB_RETRACT
+            if self.message == "Grabbed!":
+                self.message = ""
 
     def _opponent_hits(self):
         self.target = S.LANDING_FOR[self.opp_pos]
@@ -153,17 +219,19 @@ class Match(Scene):
             self.opp_anim.play(self.level.special)
         else:
             self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
-        self._set_phase("incoming", self.level.fly_time)
+        self._set_phase("incoming", self.level.fly_time / self.speed)
 
     def _player_returns(self):
         # The opponent moves to their next spot as the ball travels:
         # that movement IS the telegraph for the next shot.
         self.smash = False
+        self.speed = 1.0
         self.opp_pos = random.randrange(4)
         self.flight = (self.ball, S.OPPONENT_HIT[self.opp_pos], S.BALL_ARC)
         self._set_phase("return", self.level.return_time)
 
     def _point(self, player_won, message):
+        self._release_grab()
         if player_won:
             self.player_score += 1
         else:
@@ -192,6 +260,14 @@ class Match(Scene):
             self._begin_windup()
         elif self.phase == "windup":
             self._opponent_hits()
+        elif self.phase == "juggle":
+            self.juggle_path.pop(0)
+            if len(self.juggle_path) > 1:
+                self._juggle_hop()
+            else:  # last paddle: wind it up, then a fast shot
+                self.opp_pos = self.juggle_path.pop()
+                self.speed = self.level.juggle_speed
+                self._begin_windup(after_juggle=True)
         elif self.phase == "incoming":
             self.flight = (
                 S.PLAYER_BOUNCE[self.target],
@@ -256,6 +332,16 @@ class Match(Scene):
             return
 
         pressed = S.HIT_KEYS.index(event.key)
+        if self.grab and self.phase in ("windup", "incoming", "window"):
+            # Held by a tentacle: the right key breaks free (this press never counts as
+            # early), then you need a second press to hit. A wrong key loses the point.
+            self.keys.press(pressed)
+            if pressed == self.target:
+                self._release_grab()
+                fx.shake(1, 0.1)
+            else:
+                self._point(False, "Wrong side!")
+            return
         # The player sprite always jumps to the pressed spot and swings,
         # even on a miss, so the controls feel responsive.
         self.player_pos = pressed
@@ -295,9 +381,12 @@ class Match(Scene):
         for _, anim in self.props:
             anim.update(dt)
         self.squash = max(0.0, self.squash - dt)
+        if self.grab:
+            self.grab_t += dt
+        self.grab_out = max(0.0, self.grab_out - dt)
         self.t += dt
 
-        if self.phase in ("incoming", "window", "return"):
+        if self.phase in ("incoming", "window", "return", "juggle"):
             start, end, arc = self.flight
             f = min(self.t / self.duration, 1.0)
             self.ball = lerp_pt(start, end, f)
@@ -330,16 +419,25 @@ class Match(Scene):
         # The opponent stands behind the table, so draw them first: their feet
         # tuck behind its far edge.
         opp = self.opp_anim.image
-        surf.blit(opp, opp.get_rect(midbottom=S.OPPONENT_FEET[self.opp_pos]))
+        if self.level.anchor is None:
+            surf.blit(opp, opp.get_rect(midbottom=S.OPPONENT_FEET[self.opp_pos]))
         surf.blit(self.table, S.TABLE_SPRITE_POS)
-        self._draw_flames(surf)
         self._draw_ball_shadow(surf)
         surf.blit(self.net, S.NET_SPRITE_POS)
+        if self.level.anchor is not None:  # fills the far end, leaning over the table
+            surf.blit(opp, opp.get_rect(midbottom=self.level.anchor))
         self.scoreboard.draw(surf)
         # After a miss, the correct key stays lit so the rule is learnable.
         self.keys.draw(surf, lit=self._hint_key())
         # Opponent first so the ball and player draw over them.
         me = self.player_anim.image
+        feet = S.PLAYER_FEET[self.player_pos]
+        if (
+            self.grab and self.grab_t > S.GRAB_REACH
+        ):  # struggling in the tentacle's grip
+            feet = (feet[0] + random.choice((-1, 0, 1)), feet[1])
+        surf.blit(me, me.get_rect(midbottom=feet))
+        self._draw_grab(surf)
         surf.blit(me, me.get_rect(midbottom=S.PLAYER_FEET[self.player_pos]))
         self._draw_ball(surf)
         if self.message:
@@ -371,6 +469,54 @@ class Match(Scene):
             pygame.draw.circle(
                 surf, colour, (round(x) + jitter, round(y) - age // 2), radius
             )
+
+    def _draw_grab(self, surf):
+        """Captain Squidy's grabbing tentacle: a tapering Bezier curve from his body to you."""
+        if self.grab:
+            reach = min(self.grab_t / S.GRAB_REACH, 1.0)  # stretching out
+        elif self.grab_out > 0:
+            reach = self.grab_out / S.GRAB_RETRACT  # slithering back
+        else:
+            return
+        side = -1 if self.grab_lane < 2 else 1  # down the side of the table nearest you
+        fx_, fy = S.PLAYER_FEET[self.grab_lane]
+        waist = (fx_, fy - 16)
+        wob = math.sin(self.stage_time * 7) * 3  # it writhes
+        cx = S.WIDTH // 2
+        p0, p1 = (cx + side * 18, 52), (cx + side * 80, 60 + wob)
+        p2, p3 = (cx + side * 92 + wob, waist[1] - 12), waist
+        n = 48
+        pts = [bezier(p0, p1, p2, p3, i / n) for i in range(round(n * reach) + 1)]
+        radius = [
+            5 - 2.5 * i / n for i in range(len(pts))
+        ]  # thick at the body, thin at the tip
+        for (x, y), r in zip(pts, radius):  # black outline first...
+            pygame.draw.circle(surf, "#000000", (round(x), round(y)), round(r) + 1)
+        for (x, y), r in zip(pts, radius):  # ...then the purple body
+            pygame.draw.circle(surf, S.COL_TENTACLE, (round(x), round(y)), round(r))
+        for (x, y), r in zip(pts, radius):  # a light streak along the top
+            pygame.draw.circle(
+                surf,
+                S.COL_TENTACLE_LIGHT,
+                (round(x - r / 2), round(y - r / 2)),
+                max(1, round(r / 3)),
+            )
+        for (x, y), r in list(zip(pts, radius))[3::5]:  # suckers on the underside
+            surf.set_at((round(x + r / 2), round(y + r / 2)), S.COL_SUCKER)
+        if reach >= 1 and self.grab:  # coiled around the player's waist
+            for dy in (-4, 3):
+                band = pygame.Rect(0, 0, 26, 7)
+                band.center = (waist[0], waist[1] + dy)
+                pygame.draw.ellipse(surf, "#000000", band.inflate(2, 2))
+                pygame.draw.ellipse(surf, S.COL_TENTACLE, band)
+                pygame.draw.line(
+                    surf,
+                    S.COL_TENTACLE_LIGHT,
+                    (band.left + 4, band.top + 1),
+                    (band.right - 6, band.top + 1),
+                )
+                for sx in range(band.left + 4, band.right - 2, 5):
+                    surf.set_at((sx, band.bottom - 2), S.COL_SUCKER)
 
     def _ball_visible(self):
         return self.phase not in ("point", "over", "done")

@@ -94,6 +94,16 @@ SMASH_RIPPLE_TIME = 0.6
 FLAME_TRAIL = 10  # how many past ball positions the smash's flames follow
 COL_FLAMES = ["#F83800", "#E45C10", "#AC7C00"]  # hot to cool
 
+
+# Captain Squidy's tricks (Level 3)
+JUGGLE_ARC = 14  # height of each hop between his paddles
+GRAB_TELL = 0.35  # the windup lasts this much longer while a tentacle reaches for you
+GRAB_REACH = 0.3  # time for the tentacle to reach you
+GRAB_RETRACT = 0.25  # time for it to slither back when it lets go
+COL_TENTACLE = "#940084"
+COL_TENTACLE_LIGHT = "#D800CC"
+COL_SUCKER = "#E40058"
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key

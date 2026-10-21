@@ -1,0 +1,618 @@
+{
+ "frames": [
+  {
+   "filename": "squidy 0.aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 220
+  },
+  {
+   "filename": "squidy 1.aseprite",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 220
+  },
+  {
+   "filename": "squidy 2.aseprite",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 220
+  },
+  {
+   "filename": "squidy 3.aseprite",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 220
+  },
+  {
+   "filename": "squidy 4.aseprite",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 160
+  },
+  {
+   "filename": "squidy 5.aseprite",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 160
+  },
+  {
+   "filename": "squidy 6.aseprite",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 160
+  },
+  {
+   "filename": "squidy 7.aseprite",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 200
+  },
+  {
+   "filename": "squidy 8.aseprite",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 220
+  },
+  {
+   "filename": "squidy 9.aseprite",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 200
+  },
+  {
+   "filename": "squidy 10.aseprite",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 11.aseprite",
+   "frame": {
+    "x": 1760,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 12.aseprite",
+   "frame": {
+    "x": 1920,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 13.aseprite",
+   "frame": {
+    "x": 2080,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 14.aseprite",
+   "frame": {
+    "x": 2240,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 15.aseprite",
+   "frame": {
+    "x": 2400,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 16.aseprite",
+   "frame": {
+    "x": 2560,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 17.aseprite",
+   "frame": {
+    "x": 2720,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 18.aseprite",
+   "frame": {
+    "x": 2880,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 130
+  },
+  {
+   "filename": "squidy 19.aseprite",
+   "frame": {
+    "x": 3040,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 20.aseprite",
+   "frame": {
+    "x": 3200,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 130
+  },
+  {
+   "filename": "squidy 21.aseprite",
+   "frame": {
+    "x": 3360,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 22.aseprite",
+   "frame": {
+    "x": 3520,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 130
+  },
+  {
+   "filename": "squidy 23.aseprite",
+   "frame": {
+    "x": 3680,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 24.aseprite",
+   "frame": {
+    "x": 3840,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 130
+  },
+  {
+   "filename": "squidy 25.aseprite",
+   "frame": {
+    "x": 4000,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 26.aseprite",
+   "frame": {
+    "x": 4160,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 27.aseprite",
+   "frame": {
+    "x": 4320,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 80
+  },
+  {
+   "filename": "squidy 28.aseprite",
+   "frame": {
+    "x": 4480,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 29.aseprite",
+   "frame": {
+    "x": 4640,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 80
+  },
+  {
+   "filename": "squidy 30.aseprite",
+   "frame": {
+    "x": 4800,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 31.aseprite",
+   "frame": {
+    "x": 4960,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 80
+  },
+  {
+   "filename": "squidy 32.aseprite",
+   "frame": {
+    "x": 5120,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 90
+  },
+  {
+   "filename": "squidy 33.aseprite",
+   "frame": {
+    "x": 5280,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 80
+  },
+  {
+   "filename": "squidy 34.aseprite",
+   "frame": {
+    "x": 5440,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 35.aseprite",
+   "frame": {
+    "x": 5600,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 36.aseprite",
+   "frame": {
+    "x": 5760,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 37.aseprite",
+   "frame": {
+    "x": 5920,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 38.aseprite",
+   "frame": {
+    "x": 6080,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 140
+  },
+  {
+   "filename": "squidy 39.aseprite",
+   "frame": {
+    "x": 6240,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 140
+  },
+  {
+   "filename": "squidy 40.aseprite",
+   "frame": {
+    "x": 6400,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 140
+  },
+  {
+   "filename": "squidy 41.aseprite",
+   "frame": {
+    "x": 6560,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 140
+  },
+  {
+   "filename": "squidy 42.aseprite",
+   "frame": {
+    "x": 6720,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 43.aseprite",
+   "frame": {
+    "x": 6880,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 44.aseprite",
+   "frame": {
+    "x": 7040,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 45.aseprite",
+   "frame": {
+    "x": 7200,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 150
+  },
+  {
+   "filename": "squidy 46.aseprite",
+   "frame": {
+    "x": 7360,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 400
+  },
+  {
+   "filename": "squidy 47.aseprite",
+   "frame": {
+    "x": 7520,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 700
+  },
+  {
+   "filename": "squidy 48.aseprite",
+   "frame": {
+    "x": 7680,
+    "y": 0,
+    "w": 160,
+    "h": 80
+   },
+   "duration": 900
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "squidy.png",
+  "size": {
+   "w": 7840,
+   "h": 80
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   },
+   {
+    "name": "fidget",
+    "from": 4,
+    "to": 7,
+    "direction": "forward"
+   },
+   {
+    "name": "serve",
+    "from": 8,
+    "to": 9,
+    "direction": "forward"
+   },
+   {
+    "name": "windup_d",
+    "from": 10,
+    "to": 11,
+    "direction": "forward"
+   },
+   {
+    "name": "windup_f",
+    "from": 12,
+    "to": 13,
+    "direction": "forward"
+   },
+   {
+    "name": "windup_j",
+    "from": 14,
+    "to": 15,
+    "direction": "forward"
+   },
+   {
+    "name": "windup_k",
+    "from": 16,
+    "to": 17,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_d",
+    "from": 18,
+    "to": 19,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_f",
+    "from": 20,
+    "to": 21,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_j",
+    "from": 22,
+    "to": 23,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_k",
+    "from": 24,
+    "to": 25,
+    "direction": "forward"
+   },
+   {
+    "name": "bat_d",
+    "from": 26,
+    "to": 27,
+    "direction": "forward"
+   },
+   {
+    "name": "bat_f",
+    "from": 28,
+    "to": 29,
+    "direction": "forward"
+   },
+   {
+    "name": "bat_j",
+    "from": 30,
+    "to": 31,
+    "direction": "forward"
+   },
+   {
+    "name": "bat_k",
+    "from": 32,
+    "to": 33,
+    "direction": "forward"
+   },
+   {
+    "name": "point_won",
+    "from": 34,
+    "to": 37,
+    "direction": "forward"
+   },
+   {
+    "name": "point_lost",
+    "from": 38,
+    "to": 41,
+    "direction": "forward"
+   },
+   {
+    "name": "match_won",
+    "from": 42,
+    "to": 46,
+    "direction": "forward"
+   },
+   {
+    "name": "match_lost",
+    "from": 47,
+    "to": 48,
+    "direction": "forward"
+   }
+  ]
+ }
+}
