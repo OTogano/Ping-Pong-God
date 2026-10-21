@@ -62,11 +62,13 @@ COL_CARD_EDGE = "#7C7C7C"
 COL_MENU_DIM = "#7C7C7C"  # menu options that aren't selected
 COL_PANEL = "#000000"  # menu box
 COL_PANEL_BORDER = "#BCBCBC"
+COL_GOLD = "#AC7C00"  # highlights: selected card, "You win!", unlocks
+COL_PORTRAIT_BG = "#0000BC"  # square behind portraits on level cards
 
 # ---------------------------------------------------------------------------
 # Controls: index 0..3 = left edge, bottom left, bottom right, right edge
 # ---------------------------------------------------------------------------
-import pygame  # noqa: E402  (needed for key constants)
+import pygame  # (needed for key constants)
 
 HIT_KEYS = [pygame.K_d, pygame.K_f, pygame.K_j, pygame.K_k]
 KEY_LABELS = ["D", "F", "J", "K"]
@@ -78,6 +80,7 @@ POSITION_NAMES = ["left edge", "bottom left", "bottom right", "right edge"]
 READY_TIME = 1.0  # pause before each serve
 INTRO_TIME = 1.8  # first serve waits longer while the level name shows
 POINT_PAUSE = 1.2  # pause after a point is scored
+RESULT_DELAY = 1.5  # after the last point, wait this long before the result screen
 EARLY_PRESS_IS_MISS = True
 
 SERVE_POSITION = 1  # opponent always serves from top left

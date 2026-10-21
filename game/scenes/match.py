@@ -23,8 +23,9 @@ from game.gfx.text import BitmapFont
 from game.gfx.ui import KeyIcons, Scoreboard
 from game.levels import LEVELS
 from game.scenes.base import Scene
+from game.scenes.level_select import LevelSelectScene
 from game.scenes.pause import PauseScene
-from game.scenes.title import TitleScene
+from game.scenes.result import ResultScene
 
 
 def lerp(a, b, t):
@@ -60,6 +61,7 @@ class Match(Scene):
         # Rally state; _start_point() and _set_phase() fill these in.
         self.phase, self.duration, self.t = "ready", 0.0, 0.0
         self.flight = ((0.0, 0.0), (0.0, 0.0), 0.0)  # (start, end, arc height)
+        self.won = self.unlocked = False  # set when the match ends
         self._start_point()
         # First serve: show the level name and wait a little longer.
         self.message = f"{self.level.name}\nvs {self.level.opponent}"
@@ -107,12 +109,11 @@ class Match(Scene):
         self.scoreboard.set(self.opp_score, self.player_score)
         self.message = message
         if self.level.points_to_win in (self.player_score, self.opp_score):
-            winner = "You win!" if player_won else "You lose!"
-            self.message = f"{message}\n{winner}"
-            if player_won and self.app and self.app.progress.mark_won(self.level_index):
-                self.message += f"\n{LEVELS[self.level_index + 1].name} unlocked!"
-            self.message += "\nPress R to restart"
-            self._set_phase("over", math.inf)
+            self.won = player_won
+            self.message = f"{message}\n{'You win!' if player_won else 'You lose!'}"
+            if player_won and self.app:
+                self.unlocked = self.app.progress.mark_won(self.level_index)
+            self._set_phase("over", S.RESULT_DELAY)
         else:
             self._set_phase("point", S.POINT_PAUSE)
 
@@ -139,15 +140,38 @@ class Match(Scene):
                 self._set_phase("windup", self.level.windup_time)
         elif self.phase == "point":
             self._start_point()
+        elif self.phase == "over":
+            self._show_result()
+
+    def _show_result(self):
+        self._set_phase("done", math.inf)
+        if not self.app:
+            return
+        last = self.level_index == len(LEVELS) - 1
+        self.app.push(
+            ResultScene(
+                won=self.won,
+                score=f"You {self.player_score} - {self.opp_score} {self.level.opponent}",
+                retry=self.restart,
+                level_select=self.level_select,
+                next_level=None if last else self.next_level,
+                unlocked=LEVELS[self.level_index + 1].name if self.unlocked else None,
+                champion=self.won and last,
+            )
+        )
 
     # ------------------------------------------------------------------ input
     def restart(self):
         if self.app:
             self.app.switch(Match(self.level_index))
 
-    def quit_to_menu(self):
+    def next_level(self):
         if self.app:
-            self.app.switch(TitleScene())
+            self.app.switch(Match(self.level_index + 1))
+
+    def level_select(self):
+        if self.app:
+            self.app.switch(LevelSelectScene(self.level_index))
 
     def handle_event(self, event):
         if event.type != pygame.KEYDOWN:
@@ -155,12 +179,9 @@ class Match(Scene):
         if controls.pressed(event, controls.BACK) and self.app:
             self.app.push(
                 PauseScene(
-                    self.restart, self.quit_to_menu, self.app.renderer.supports_crt
+                    self.restart, self.level_select, self.app.renderer.supports_crt
                 )
             )
-            return
-        if event.key == pygame.K_r and self.phase == "over":
-            self.restart()
             return
         if event.key not in S.HIT_KEYS:
             return
@@ -237,7 +258,7 @@ class Match(Scene):
         surf.blit(image, image.get_rect(center=pos))
 
     def _ball_visible(self):
-        return self.phase not in ("point", "over")
+        return self.phase not in ("point", "over", "done")
 
     def _draw_ball_shadow(self, surf):
         if self._ball_visible():

@@ -1,7 +1,8 @@
-"""Title screen. Placeholder text for now; the character art comes in step 3."""
+"""Title screen: the character close-up, the logo and "Press Enter"."""
 
 from game import controls
 from game import settings as S
+from game.gfx.sprites import load_image
 from game.gfx.text import BitmapFont
 from game.scenes.base import Scene
 
@@ -9,18 +10,19 @@ from game.scenes.base import Scene
 class TitleScene(Scene):
     def __init__(self):
         self.font = BitmapFont()
+        self.background = load_image("ui", "title_bg.png")
+        self.logo = load_image("ui", "logo.png")
         self.time = 0.0
 
     def handle_event(self, event):
         if not self.app:
             return
         if controls.pressed(event, controls.CONFIRM):
-            from game.scenes.match import (
-                Match,  # imported here to avoid a circular import
+            from game.scenes.level_select import (
+                LevelSelectScene,  # avoids a circular import
             )
 
-            # Until the level select (step 3): play the next level you haven't beaten.
-            self.app.switch(Match(self.app.progress.next_to_play()))
+            self.app.switch(LevelSelectScene(self.app.progress.next_to_play()))
         elif controls.pressed(event, controls.BACK):
             self.app.quit()
 
@@ -28,8 +30,10 @@ class TitleScene(Scene):
         self.time += dt
 
     def draw(self, surf):
-        surf.fill(S.COL_BG)
-        self.font.draw(surf, S.TITLE, (S.WIDTH // 2, 80))
+        surf.blit(self.background, (0, 0))
+        surf.blit(self.logo, self.logo.get_rect(midtop=(S.WIDTH // 2, 10)))
         if int(self.time * 2) % 2 == 0:  # blink twice a second
-            self.font.draw(surf, "Press Enter", (S.WIDTH // 2, 130))
-        self.font.draw(surf, "Esc to quit", (S.WIDTH // 2, 200), color=S.COL_MENU_DIM)
+            self.font.draw(surf, "Press Enter", (S.WIDTH // 2, 68))
+        self.font.draw(
+            surf, "Esc: quit", (4, S.HEIGHT - 10), align="left", color=S.COL_MENU_DIM
+        )

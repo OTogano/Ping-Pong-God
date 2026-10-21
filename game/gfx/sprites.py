@@ -84,23 +84,25 @@ def load_animations(name):
     return anims
 
 
+def recolour_surface(surf, mapping):
+    """Copy of one image with colours swapped, e.g. {"#004058": "#940084"}."""
+    surf = surf.copy()
+    pixels = pygame.PixelArray(surf)
+    for old, new in mapping.items():
+        pixels.replace(pygame.Color(old), pygame.Color(new))
+    del pixels  # unlock the surface
+    return surf
+
+
 def recolour(anims, mapping):
-    """Copy of anims with colours swapped, e.g. {"#004058": "#940084"}.
+    """Copy of anims with colours swapped (every frame of every animation).
 
     Handy for giving the opponent a different kit before they get their own art.
     """
-    out = {}
-    for tag, frames in anims.items():
-        new_frames = []
-        for surf, dur in frames:
-            surf = surf.copy()
-            pixels = pygame.PixelArray(surf)
-            for old, new in mapping.items():
-                pixels.replace(pygame.Color(old), pygame.Color(new))
-            del pixels  # unlock the surface
-            new_frames.append((surf, dur))
-        out[tag] = new_frames
-    return out
+    return {
+        tag: [(recolour_surface(surf, mapping), dur) for surf, dur in frames]
+        for tag, frames in anims.items()
+    }
 
 
 class Animator:

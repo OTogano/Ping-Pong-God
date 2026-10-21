@@ -13,8 +13,8 @@ from game.scenes.base import Scene
 class PauseScene(Scene):
     is_overlay = True
 
-    def __init__(self, restart, quit_to_menu, crt_available):
-        """restart / quit_to_menu: functions to call for those options.
+    def __init__(self, restart, level_select, crt_available):
+        """restart / level_select: functions to call for those options.
         crt_available: False on the software renderer, which has no CRT shader."""
         self.font = BitmapFont()
         items = [("Resume", self.resume), ("Restart", restart)]
@@ -22,7 +22,7 @@ class PauseScene(Scene):
             items.append(
                 (lambda: f"CRT filter: {'on' if fx.crt else 'off'}", self.toggle_crt)
             )
-        items.append(("Quit to menu", quit_to_menu))
+        items.append(("Level select", level_select))
         self.menu = Menu(items)
 
     def resume(self):
