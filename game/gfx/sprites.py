@@ -155,6 +155,10 @@ class Animator:
         else:
             self.play(name)
 
+    def has(self, name):
+        """Does this sprite have an animation called `name`?"""
+        return name in self.anims
+
     @property
     def busy(self):
         """True while a play-once animation (a swing) is running."""

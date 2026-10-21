@@ -55,7 +55,8 @@ class FlipCard:
 
 
 class Scoreboard:
-    def __init__(self):
+    def __init__(self, pos=None):
+        self.pos = pos or S.SCOREBOARD_POS
         self.board = load_image("ui", "scoreboard.png")
         with open(
             S.resource_path(os.path.join("assets", "ui", "scoreboard.json")),
@@ -63,7 +64,7 @@ class Scoreboard:
         ) as f:
             meta = json.load(f)
         digits = load_strip(os.path.join("ui", "digits.png"), meta["digit_size"][0])
-        bx, by = S.SCOREBOARD_POS
+        bx, by = self.pos
         # Card 0 is CPU, card 1 is YOU (matches the labels on the board).
         self.cards = [
             FlipCard(digits, (bx + sx, by + sy)) for sx, sy in meta["digit_slots"]
@@ -78,7 +79,7 @@ class Scoreboard:
             card.update(dt)
 
     def draw(self, surf):
-        surf.blit(self.board, S.SCOREBOARD_POS)
+        surf.blit(self.board, self.pos)
         for card in self.cards:
             card.draw(surf)
 

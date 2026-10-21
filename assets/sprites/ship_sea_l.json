@@ -1,0 +1,60 @@
+{
+ "frames": [
+  {
+   "filename": "ship_sea_l 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 224
+   },
+   "duration": 180
+  },
+  {
+   "filename": "ship_sea_l 1",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 24,
+    "h": 224
+   },
+   "duration": 180
+  },
+  {
+   "filename": "ship_sea_l 2",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 24,
+    "h": 224
+   },
+   "duration": 180
+  },
+  {
+   "filename": "ship_sea_l 3",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 24,
+    "h": 224
+   },
+   "duration": 180
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "ship_sea_l.png",
+  "size": {
+   "w": 96,
+   "h": 224
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   }
+  ]
+ }
+}

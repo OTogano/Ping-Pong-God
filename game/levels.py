@@ -56,6 +56,22 @@ class Level:
     )
     # Animated people and things on the stage (see Prop below).
     props: tuple = ()
+    # Opponents who fill the whole far end (Captain Squidy) stay at this point
+    # (bottom-centre of their frame) instead of moving between OPPONENT_FEET, and are
+    # drawn over the far end of the table. If they have "windup_d".."windup_k"
+    # animations, the windup shows which paddle will hit.
+    anchor: tuple | None = None
+    # Juggle: he bats the ball between his paddles, then fires a fast shot from the
+    # LAST paddle that touched it (so it's still readable if you track the ball).
+    juggle_chance: float = 0.0
+    juggle_hops: tuple = (3, 5)  # how many hops (min, max)
+    juggle_hop_time: float = 0.2  # seconds per hop
+    juggle_speed: float = 1.0  # speed of the shot that follows (1.6 = 60% faster)
+    # Grab: a tentacle holds you during his windup. Press the right key once to
+    # break free, then again (in the hit window) to return the ball.
+    grab_chance: float = 0.0
+    # Where the scoreboard stands on this stage (None = settings.SCOREBOARD_POS).
+    scoreboard_pos: tuple | None = None
 
 
 LEVELS = [
@@ -78,7 +94,7 @@ LEVELS = [
     Level(
         name="Level 2",
         opponent="Esmeralda",
-        points_to_win=3,
+        points_to_win=5,
         windup_time=0.25,
         fly_time=0.9,
         hit_window=0.45,
@@ -99,14 +115,29 @@ LEVELS = [
     ),  # up and down the turf,
     Level(
         name="Level 3",
-        opponent="Rival 2",
+        opponent="Captain Squidy",
         points_to_win=5,
-        windup_time=0.2,
-        fly_time=0.75,
-        hit_window=0.38,
+        windup_time=0.3,
+        fly_time=0.8,
+        hit_window=0.4,
         return_time=0.6,
         opponent_miss_chance=0.15,
-        kit={"#004058": "#005800", "#E45C10": "#AC7C00", "#F83800": "#A81000"},
+        sprite="squidy",
+        portrait="squidy_portrait",
+        background="ship_bg",
+        anchor=(128, 80),  # fills all four lanes
+        juggle_chance=0.5,
+        juggle_hops=(3, 5),
+        juggle_hop_time=0.1,
+        juggle_speed=3.0,
+        grab_chance=0.25,
+        scoreboard_pos=(30, 92),  # on the deck, clear of the rail and sea
+        props=(
+            Prop("ship_sea_l", 0, 0),  # waves rolling past the hull
+            Prop("ship_sea_r", 233, 0),
+            Prop("ship_cannon_l", 0, 48),  # pirates firing cannons
+            Prop("ship_cannon_r", 192, 96),
+        ),
     ),
     Level(
         name="Final",
