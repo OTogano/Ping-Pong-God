@@ -19,7 +19,8 @@ class TitleScene(Scene):
                 Match,  # imported here to avoid a circular import
             )
 
-            self.app.switch(Match())
+            # Until the level select (step 3): play the next level you haven't beaten.
+            self.app.switch(Match(self.app.progress.next_to_play()))
         elif controls.pressed(event, controls.BACK):
             self.app.quit()
 

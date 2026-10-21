@@ -21,6 +21,7 @@ from game.gfx.effects import fx
 from game.gfx.sprites import Animator, load_animations, load_image, load_strip, recolour
 from game.gfx.text import BitmapFont
 from game.gfx.ui import KeyIcons, Scoreboard
+from game.levels import LEVELS
 from game.scenes.base import Scene
 from game.scenes.pause import PauseScene
 from game.scenes.title import TitleScene
@@ -35,7 +36,9 @@ def lerp_pt(p, q, t):
 
 
 class Match(Scene):
-    def __init__(self):
+    def __init__(self, level_index=0):
+        self.level_index = level_index
+        self.level = LEVELS[level_index]
         self.font = BitmapFont()
         self.table = load_image("sprites", "table.png")
         self.net = load_image("sprites", "net.png")
@@ -44,11 +47,10 @@ class Match(Scene):
         )
         self.scoreboard = Scoreboard()
         self.keys = KeyIcons()
-        self.returns = 0  # successful returns this match (key hints fade after a few)
         self.squash = 0.0
         anims = load_animations("player")
         self.player_anim = Animator(anims)
-        self.opp_anim = Animator(recolour(anims, S.OPPONENT_KIT))
+        self.opp_anim = Animator(recolour(anims, self.level.kit))
         self.player_score = 0
         self.opp_score = 0
         self.player_pos = 1  # player rests at bottom left
@@ -59,6 +61,9 @@ class Match(Scene):
         self.phase, self.duration, self.t = "ready", 0.0, 0.0
         self.flight = ((0.0, 0.0), (0.0, 0.0), 0.0)  # (start, end, arc height)
         self._start_point()
+        # First serve: show the level name and wait a little longer.
+        self.message = f"{self.level.name}\nvs {self.level.opponent}"
+        self.duration = S.INTRO_TIME
 
     # ------------------------------------------------------------------ phases
     def _set_phase(self, name, duration):
@@ -83,15 +88,14 @@ class Match(Scene):
             S.PLAYER_BOUNCE[self.target],
             S.BALL_ARC,
         )
-        self._set_phase("incoming", S.FLY_TIME)
+        self._set_phase("incoming", self.level.fly_time)
 
     def _player_returns(self):
         # The opponent moves to their next spot as the ball travels:
         # that movement IS the telegraph for the next shot.
-        self.returns += 1
         self.opp_pos = random.randrange(4)
         self.flight = (self.ball, S.OPPONENT_HIT[self.opp_pos], S.BALL_ARC)
-        self._set_phase("return", S.RETURN_TIME)
+        self._set_phase("return", self.level.return_time)
 
     def _point(self, player_won, message):
         if player_won:
@@ -102,16 +106,20 @@ class Match(Scene):
             fx.shake(*S.MISS_SHAKE)
         self.scoreboard.set(self.opp_score, self.player_score)
         self.message = message
-        if S.POINTS_TO_WIN in (self.player_score, self.opp_score):
+        if self.level.points_to_win in (self.player_score, self.opp_score):
             winner = "You win!" if player_won else "You lose!"
-            self.message = f"{message}\n{winner}\nPress R to restart"
+            self.message = f"{message}\n{winner}"
+            if player_won and self.app and self.app.progress.mark_won(self.level_index):
+                self.message += f"\n{LEVELS[self.level_index + 1].name} unlocked!"
+            self.message += "\nPress R to restart"
             self._set_phase("over", math.inf)
         else:
             self._set_phase("point", S.POINT_PAUSE)
 
     def _advance(self):
         if self.phase == "ready":
-            self._set_phase("windup", S.WINDUP_TIME)
+            self.message = ""  # clears the level name after the first serve
+            self._set_phase("windup", self.level.windup_time)
         elif self.phase == "windup":
             self._opponent_hits()
         elif self.phase == "incoming":
@@ -121,21 +129,21 @@ class Match(Scene):
                 S.WINDOW_ARC,
             )
             self.squash = S.BALL_SQUASH_TIME  # the ball just bounced on your side
-            self._set_phase("window", S.HIT_WINDOW)
+            self._set_phase("window", self.level.hit_window)
         elif self.phase == "window":
             self._point(False, "Too late!")
         elif self.phase == "return":
-            if random.random() < S.OPPONENT_MISS_CHANCE:
+            if random.random() < self.level.opponent_miss_chance:
                 self._point(True, "Opponent missed!")
             else:
-                self._set_phase("windup", S.WINDUP_TIME)
+                self._set_phase("windup", self.level.windup_time)
         elif self.phase == "point":
             self._start_point()
 
     # ------------------------------------------------------------------ input
     def restart(self):
         if self.app:
-            self.app.switch(Match())
+            self.app.switch(Match(self.level_index))
 
     def quit_to_menu(self):
         if self.app:
@@ -216,9 +224,8 @@ class Match(Scene):
 
     def _hint_key(self):
         """Which key icon to light up: the right answer for the incoming shot."""
-        hints_on = S.KEY_HINTS and (
-            S.KEY_HINT_RETURNS is None or self.returns < S.KEY_HINT_RETURNS
-        )
+        # Hints stay on until you've won enough points (tutorial: your first point).
+        hints_on = self.player_score < self.level.hints_until_score
         if hints_on and self.phase in ("incoming", "window"):
             return self.target
         if self.last_target is not None:  # after a miss, show which key was right

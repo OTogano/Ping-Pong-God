@@ -13,6 +13,7 @@ import sys
 
 import pygame
 
+from game import save
 from game import settings as S
 from game.gfx.effects import fx
 from game.gfx.renderer import create_renderer
@@ -29,6 +30,7 @@ class App:
         self.canvas = pygame.Surface((S.WIDTH, S.HEIGHT))
         self.clock = pygame.time.Clock()
         self.stack = []
+        self.progress = save.load()  # which levels are beaten / unlocked
 
     # ---------------------------------------------------------------- scenes
     def _attach(self, scene):

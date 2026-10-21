@@ -72,28 +72,19 @@ HIT_KEYS = [pygame.K_d, pygame.K_f, pygame.K_j, pygame.K_k]
 KEY_LABELS = ["D", "F", "J", "K"]
 POSITION_NAMES = ["left edge", "bottom left", "bottom right", "right edge"]
 
+# Rules and timings (seconds) shared by every level.
+# Per-level numbers (speed, hit window, points to win, ...) are in levels.py.
 # ---------------------------------------------------------------------------
-# Rules and timings (seconds). These are the numbers we'll tune per level.
-# ---------------------------------------------------------------------------
-POINTS_TO_WIN = 3
 READY_TIME = 1.0  # pause before each serve
-WINDUP_TIME = 0.25  # opponent stands at a spot before hitting (the telegraph)
-FLY_TIME = 0.9  # ball travel from opponent to the bounce on your half
-HIT_WINDOW = 0.45  # time after the bounce in which you must press
-RETURN_TIME = 0.7  # your return travelling back to the opponent
+INTRO_TIME = 1.8  # first serve waits longer while the level name shows
 POINT_PAUSE = 1.2  # pause after a point is scored
 EARLY_PRESS_IS_MISS = True
-OPPONENT_MISS_CHANCE = 0.2  # tutorial opponent misses 1 in 5 of your returns
 
 SERVE_POSITION = 1  # opponent always serves from top left
 MISS_SHAKE = (3, 0.3)
 RETURN_FLASH = 0.25
 
 # HUD and feedback
-KEY_HINTS = True  # light the key for the incoming shot (tutorial)
-KEY_HINT_RETURNS = (
-    5  # stop lighting after this many returns in a match; None = never stop
-)
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
 FLIP_TIME = 0.25  # flip-board card animation
@@ -132,7 +123,6 @@ KEY_ICON_POS = [(48, 178), (66, 200), (174, 200), (192, 178)]  # beside D F J K 
 BALL_SIZE = 7  # ball.png frames: ball, squashed ball, shadow
 
 # Until opponents get their own art, they wear your sprite in a different kit.
-OPPONENT_KIT = {"#004058": "#940084", "#E45C10": "#00A844", "#F83800": "#00B800"}
 
 # The telegraph rule: opponent position -> where the ball lands for you.
 # Edges cross the table, bottom shots go straight.
