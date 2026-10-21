@@ -1,18 +1,23 @@
+"""Entry point: window, renderer and the main loop."""
+
 import sys
 
 import pygame
 
 from game import settings as S
+from game.gfx.effects import fx
+from game.gfx.renderer import create_renderer
 from game.scenes.match import Match
 
 
 def main():
     pygame.init()
-    window = pygame.display.set_mode((S.WIDTH * S.SCALE, S.HEIGHT * S.SCALE))
     pygame.display.set_caption(S.TITLE)
+    renderer = create_renderer((S.WIDTH * S.SCALE, S.HEIGHT * S.SCALE))
+    print(f"Renderer: {renderer.name}")
 
-    # We draw everything on this small canvas, then blow it up to the window.
-    # That keeps every pixel crisp and the art consistent.
+    # We draw everything on this small canvas; the renderer scales it up to
+    # the window and applies the shader effects.
     canvas = pygame.Surface((S.WIDTH, S.HEIGHT))
     clock = pygame.time.Clock()
     scene = Match()
@@ -28,12 +33,14 @@ def main():
             ):
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == S.CRT_TOGGLE_KEY:
+                fx.crt = not fx.crt
             scene.handle_event(event)
 
         scene.update(dt)
+        fx.update(dt)
         scene.draw(canvas)
-        pygame.transform.scale(canvas, window.get_size(), window)
-        pygame.display.flip()
+        renderer.present(canvas)
 
 
 if __name__ == "__main__":

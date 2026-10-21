@@ -16,6 +16,7 @@ import random
 import pygame
 
 from game import settings as S
+from game.gfx.effects import fx
 from game.gfx.sprites import Animator, load_animations, recolour
 
 
@@ -79,6 +80,7 @@ class Match:
         else:
             self.opp_score += 1
             self.last_target = self.target
+            fx.shake(*S.MISS_SHAKE)
         self.message = message
         if S.POINTS_TO_WIN in (self.player_score, self.opp_score):
             winner = "You win!" if player_won else "You lose!"
@@ -129,6 +131,7 @@ class Match:
             self._point(False, "Too early!")
         elif self.phase == "window":
             if pressed == self.target:
+                fx.flash(S.RETURN_FLASH)
                 self._player_returns()
             else:
                 self._point(False, "Wrong side!")

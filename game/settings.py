@@ -14,6 +14,7 @@ TITLE = "Ping Pong God"
 WIDTH, HEIGHT = 256, 224  # internal "pixel" resolution (SNES-sized canvas)
 SCALE = 3  # window = 768 x 672; keep it a whole number
 FPS = 60
+FORCE_SOFTWARE_RENDERER = False
 
 # ---------------------------------------------------------------------------
 # Palette (NES, as provided). Index order matches the list you pasted.
@@ -71,6 +72,7 @@ COL_HIGHLIGHT = "#AC7C00"
 import pygame  # noqa: E402  (needed for key constants)
 
 HIT_KEYS = [pygame.K_d, pygame.K_f, pygame.K_j, pygame.K_k]
+CRT_TOGGLE_KEY = pygame.K_c
 KEY_LABELS = ["D", "F", "J", "K"]
 POSITION_NAMES = ["left edge", "bottom left", "bottom right", "right edge"]
 
@@ -88,6 +90,8 @@ EARLY_PRESS_IS_MISS = True
 OPPONENT_MISS_CHANCE = 0.2  # tutorial opponent misses 1 in 5 of your returns
 
 SERVE_POSITION = 1  # opponent always serves from top left
+MISS_SHAKE = (3, 0.3)
+RETURN_FLASH = 0.25
 
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)
