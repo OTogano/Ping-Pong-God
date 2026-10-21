@@ -31,9 +31,19 @@ class LevelSelectScene(Scene):
         self.lock = load_image("ui", "lock.png")
         self.star = load_image("ui", "star.png")
         # One portrait per level in that opponent's kit, plus a black silhouette for locked cards.
-        self.portraits = [recolour_surface(portrait, level.kit) for level in LEVELS]
-        self.silhouette = portrait.copy()
-        self.silhouette.fill((0, 0, 0), special_flags=pygame.BLEND_RGB_MULT)
+        # One portrait per level: the opponent's own, or the player's in their kit.
+        # Locked cards show the same face as a black silhouette.
+        self.portraits = [
+            load_image("sprites", f"{level.portrait}.png")
+            if level.portrait
+            else recolour_surface(portrait, level.kit)
+            for level in LEVELS
+        ]
+        self.silhouettes = []
+        for face in self.portraits:
+            shadow = face.copy()
+            shadow.fill((0, 0, 0), special_flags=pygame.BLEND_RGB_MULT)
+            self.silhouettes.append(shadow)
         self.index = index
         self.shake = 0.0
         self.notice = ""
@@ -116,7 +126,7 @@ class LevelSelectScene(Scene):
         box = pygame.Rect(0, 0, PORTRAIT_BOX, PORTRAIT_BOX)
         box.midtop = (card.centerx, y + 6)
         pygame.draw.rect(surf, S.COL_PORTRAIT_BG, box)
-        face = self.portraits[i] if unlocked else self.silhouette
+        face = self.portraits[i] if unlocked else self.silhouettes[i]
         surf.blit(face, face.get_rect(midbottom=box.midbottom))
         if not unlocked:
             surf.blit(
@@ -128,4 +138,6 @@ class LevelSelectScene(Scene):
         name_color = None if unlocked else S.COL_MENU_DIM
         self.font.draw(surf, LEVELS[i].name, (card.centerx, y + 42), color=name_color)
         opponent = LEVELS[i].opponent if unlocked else "???"
-        self.font.draw(surf, opponent, (card.centerx, y + 56), color=S.COL_MENU_DIM)
+        if self.font.width(opponent) > CARD_W - 4:  # e.g. "Coach Greg" -> two lines
+            opponent = opponent.replace(" ", "\n", 1)
+        self.font.draw(surf, opponent, (card.centerx, y + 54), color=S.COL_MENU_DIM)

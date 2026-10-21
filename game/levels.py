@@ -23,12 +23,20 @@ class Level:
     # Opponent colours until they get their own art: player colour -> opponent colour
     kit: dict[str, str] = field(default_factory=dict)
     background: str | None = None  # image in assets/backgrounds/ (None = plain floor)
+    # Own art (assets/sprites/<sprite>.png + .json and <portrait>.png). None = the
+    # player's sprite recoloured with `kit`.
+    sprite: str | None = None
+    portrait: str | None = None
+    # A showy alternative to the normal swing on centre shots (it never changes
+    # where the ball goes): the animation tag to play, and how often.
+    special: str | None = None
+    special_chance: float = 0.0
 
 
 LEVELS = [
     Level(
         name="Tutorial",
-        opponent="Coach",
+        opponent="Coach Greg",
         points_to_win=3,
         windup_time=0.35,
         fly_time=1.1,
@@ -36,8 +44,11 @@ LEVELS = [
         return_time=0.8,
         opponent_miss_chance=0.3,
         hints_until_score=1,
-        kit={"#004058": "#7C7C7C", "#E45C10": "#0078F8", "#F83800": "#0058F8"},
-    ),
+        sprite="coach_greg",
+        portrait="coach_greg_portrait",
+        special="belly",
+        special_chance=0.2,
+    ),  # belly bump on 1 in 5 centre shots,
     Level(
         name="Level 2",
         opponent="Rival 1",

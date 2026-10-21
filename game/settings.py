@@ -93,6 +93,9 @@ BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
 FLIP_TIME = 0.25  # flip-board card animation
 MESSAGE_Y = 70  # where messages like "Too late!" appear
 MENU_LINE = 12  # pixels between menu options
+MOP_CHANCE = (
+    0.25  # per second: opponents with a "mop" animation wipe their brow while waiting
+)
 
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)
@@ -110,7 +113,9 @@ SPRITE_SIZE = 32
 
 # Where the centre of each sprite stands at each of the 4 positions
 PLAYER_STAND = [(56, 160), (104, 208), (152, 208), (200, 160)]
-OPPONENT_STAND = [(56, 64), (104, 16), (152, 16), (200, 64)]
+# Opponents are placed by their feet (bottom-centre of the frame), so sprites of
+# any size line up. At the far end they stand behind the table's far edge.
+OPPONENT_FEET = [(56, 80), (104, 40), (152, 40), (200, 80)]
 
 # Where the ball leaves the opponent, bounces on your half, and meets your paddle
 OPPONENT_HIT = [(84, 64), (104, 40), (152, 40), (172, 64)]

@@ -135,6 +135,12 @@ class Animator:
         if not self.once and self.current != name:
             self._start(name, once=False)
 
+    def switch(self, name):
+        if name not in self.anims:
+            name = "idle"
+        self.looping = name
+        self._start(name, once=False)
+
     @property
     def busy(self):
         """True while a play-once animation (a swing) is running."""
