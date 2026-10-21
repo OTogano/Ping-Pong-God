@@ -5,6 +5,7 @@ import os
 
 import pygame
 
+from game import controls
 from game import settings as S
 from game.gfx.sprites import load_image, load_strip
 
@@ -113,3 +114,54 @@ class KeyIcons:
                 else (self.LIT if i == lit else self.NORMAL)
             )
             surf.blit(self.icons[i][state], pos)
+
+
+class Menu:
+    """A vertical list of options. Up/Down (or W/S) moves, Enter/Space picks.
+
+    items: list of (label, action). label can be a string, or a function that
+    returns a string (for things that change, like "CRT FILTER: ON").
+    """
+
+    def __init__(self, items):
+        self.items = items
+        self.index = 0
+
+    def handle_event(self, event):
+        if controls.pressed(event, controls.UP):
+            self.index = (self.index - 1) % len(self.items)
+        elif controls.pressed(event, controls.DOWN):
+            self.index = (self.index + 1) % len(self.items)
+        elif controls.pressed(event, controls.CONFIRM):
+            self.items[self.index][1]()
+
+    def labels(self):
+        return [label() if callable(label) else label for label, _ in self.items]
+
+    def draw(self, surf, font, centre_x, top):
+        for i, label in enumerate(self.labels()):
+            y = top + i * S.MENU_LINE
+            if i == self.index:
+                font.draw(surf, f"> {label} <", (centre_x, y))
+            else:
+                font.draw(surf, label, (centre_x, y), color=S.COL_MENU_DIM)
+
+
+def dim(surf):
+    """Darken the whole screen with a checkerboard of black pixels (stays in palette)."""
+    global _dither
+    if _dither is None or _dither.get_size() != surf.get_size():
+        _dither = pygame.Surface(surf.get_size(), pygame.SRCALPHA)
+        for y in range(surf.get_height()):
+            for x in range(y % 2, surf.get_width(), 2):
+                _dither.set_at((x, y), (0, 0, 0, 255))
+    surf.blit(_dither, (0, 0))
+
+
+_dither = None
+
+
+def panel(surf, rect):
+    """Black box with a light border, for menus."""
+    pygame.draw.rect(surf, S.COL_PANEL, rect)
+    pygame.draw.rect(surf, S.COL_PANEL_BORDER, rect, 1)

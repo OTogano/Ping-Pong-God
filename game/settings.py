@@ -59,6 +59,9 @@ COL_BG = "#000000"
 COL_FLOOR = "#503000"
 COL_CARD = "#BCBCBC"  # flip-board card face (must match scoreboard.png)
 COL_CARD_EDGE = "#7C7C7C"
+COL_MENU_DIM = "#7C7C7C"  # menu options that aren't selected
+COL_PANEL = "#000000"  # menu box
+COL_PANEL_BORDER = "#BCBCBC"
 
 # ---------------------------------------------------------------------------
 # Controls: index 0..3 = left edge, bottom left, bottom right, right edge
@@ -66,7 +69,6 @@ COL_CARD_EDGE = "#7C7C7C"
 import pygame  # noqa: E402  (needed for key constants)
 
 HIT_KEYS = [pygame.K_d, pygame.K_f, pygame.K_j, pygame.K_k]
-CRT_TOGGLE_KEY = pygame.K_c
 KEY_LABELS = ["D", "F", "J", "K"]
 POSITION_NAMES = ["left edge", "bottom left", "bottom right", "right edge"]
 
@@ -96,6 +98,7 @@ KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
 FLIP_TIME = 0.25  # flip-board card animation
 MESSAGE_Y = 70  # where messages like "Too late!" appear
+MENU_LINE = 12  # pixels between menu options
 
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)

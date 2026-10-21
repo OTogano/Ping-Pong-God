@@ -15,11 +15,15 @@ import random
 
 import pygame
 
+from game import controls
 from game import settings as S
 from game.gfx.effects import fx
 from game.gfx.sprites import Animator, load_animations, load_image, load_strip, recolour
 from game.gfx.text import BitmapFont
 from game.gfx.ui import KeyIcons, Scoreboard
+from game.scenes.base import Scene
+from game.scenes.pause import PauseScene
+from game.scenes.title import TitleScene
 
 
 def lerp(a, b, t):
@@ -30,7 +34,7 @@ def lerp_pt(p, q, t):
     return (lerp(p[0], q[0], t), lerp(p[1], q[1], t))
 
 
-class Match:
+class Match(Scene):
     def __init__(self):
         self.font = BitmapFont()
         self.table = load_image("sprites", "table.png")
@@ -129,11 +133,26 @@ class Match:
             self._start_point()
 
     # ------------------------------------------------------------------ input
+    def restart(self):
+        if self.app:
+            self.app.switch(Match())
+
+    def quit_to_menu(self):
+        if self.app:
+            self.app.switch(TitleScene())
+
     def handle_event(self, event):
         if event.type != pygame.KEYDOWN:
             return
+        if controls.pressed(event, controls.BACK) and self.app:
+            self.app.push(
+                PauseScene(
+                    self.restart, self.quit_to_menu, self.app.renderer.supports_crt
+                )
+            )
+            return
         if event.key == pygame.K_r and self.phase == "over":
-            self.__init__()
+            self.restart()
             return
         if event.key not in S.HIT_KEYS:
             return

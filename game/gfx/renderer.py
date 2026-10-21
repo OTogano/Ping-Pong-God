@@ -28,6 +28,7 @@ def _read_shader(name):
 
 class GLRenderer:
     name = "OpenGL"
+    supports_crt = True
 
     def __init__(self, window_size):
         # Ask for a modern (3.3 core) OpenGL context before opening the window.
@@ -90,6 +91,7 @@ class GLRenderer:
 
 class SoftwareRenderer:
     name = "software"
+    supports_crt = False
 
     def __init__(self, window_size):
         self.window = pygame.display.set_mode(window_size)
