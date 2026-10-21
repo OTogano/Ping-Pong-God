@@ -47,6 +47,11 @@ class Match(Scene):
             if self.level.background
             else None
         )
+        # Animated stage props (people working out, ...), each looping its "idle" tag.
+        self.props = [
+            (prop, Animator(load_animations(prop.sprite))) for prop in self.level.props
+        ]
+        self.stage_time = 0.0
         self.table = load_image("sprites", "table.png")
         self.net = load_image("sprites", "net.png")
         self.ball_img, self.ball_squash, self.ball_shadow = load_strip(
@@ -67,6 +72,8 @@ class Match(Scene):
         self.special = (
             False  # is the coming shot the opponent's showy special (e.g. belly bump)?
         )
+        self.smash = False  # is the coming shot a smash (fast, flaming)?
+        self.trail = []  # recent ball positions, for the smash's flame trail
         self.player_score = 0
         self.opp_score = 0
         self.player_pos = 1  # player rests at bottom left
@@ -96,6 +103,7 @@ class Match(Scene):
         self.message = ""
         self.last_target = None
         self.special = False
+        self.smash = False
         self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
         self._set_phase("ready", S.READY_TIME)
 
@@ -103,6 +111,19 @@ class Match(Scene):
         """The opponent stands at their spot and winds up: this is the telegraph."""
         self.target = S.LANDING_FOR[self.opp_pos]
         lvl = self.level
+        played = self.player_score + self.opp_score
+        self.smash = (
+            lvl.smash_chance > 0
+            and played >= lvl.smash_after_points
+            and random.random() < lvl.smash_chance
+        )
+        if self.smash:
+            # The tell (Esmeralda: red eyes, grin, arms wide), held a bit longer to be fair.
+            self.trail = []  # forget the last smash's flames (they were at the player's end)
+            self.special = False
+            self.opp_anim.switch("windup_smash")
+            self._set_phase("windup", lvl.windup_time + lvl.smash_tell_extra)
+            return
         self.special = (
             lvl.special is not None
             and self.target in (1, 2)
@@ -114,20 +135,30 @@ class Match(Scene):
 
     def _opponent_hits(self):
         self.target = S.LANDING_FOR[self.opp_pos]
-        if self.special and self.level.special:
-            self.opp_anim.play(self.level.special)
-        else:
-            self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
         self.flight = (
             S.OPPONENT_HIT[self.opp_pos],
             S.PLAYER_BOUNCE[self.target],
             S.BALL_ARC,
         )
+        if self.smash:
+            self.opp_anim.play("smash")
+            self.trail = []
+            hit = S.OPPONENT_HIT[self.opp_pos]
+            fx.flash(S.SMASH_FLASH, color=S.SMASH_FLASH_COLOR)
+            fx.shake(*S.SMASH_SHAKE)
+            fx.ripple(hit[0], hit[1], S.SMASH_RIPPLE_TIME)
+            self._set_phase("incoming", self.level.fly_time / self.level.smash_speed)
+            return
+        if self.special and self.level.special:
+            self.opp_anim.play(self.level.special)
+        else:
+            self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
         self._set_phase("incoming", self.level.fly_time)
 
     def _player_returns(self):
         # The opponent moves to their next spot as the ball travels:
         # that movement IS the telegraph for the next shot.
+        self.smash = False
         self.opp_pos = random.randrange(4)
         self.flight = (self.ball, S.OPPONENT_HIT[self.opp_pos], S.BALL_ARC)
         self._set_phase("return", self.level.return_time)
@@ -254,12 +285,15 @@ class Match(Scene):
             if (
                 self.phase in ("ready", "point")
                 and not self.opp_anim.busy
-                and random.random() < S.MOP_CHANCE * dt
+                and random.random() < S.FIDGET_CHANCE * dt
             ):
-                self.opp_anim.play("mop")
+                self.opp_anim.play("fidget")
         self.opp_anim.update(dt)
         self.scoreboard.update(dt)
         self.keys.update(dt)
+        self.stage_time += dt
+        for _, anim in self.props:
+            anim.update(dt)
         self.squash = max(0.0, self.squash - dt)
         self.t += dt
 
@@ -268,6 +302,10 @@ class Match(Scene):
             f = min(self.t / self.duration, 1.0)
             self.ball = lerp_pt(start, end, f)
             self.ball_h = math.sin(math.pi * f) * arc  # simple hop: up then down
+            if self.smash:
+                self.trail = (
+                    self.trail + [(self.ball[0], self.ball[1] - self.ball_h)]
+                )[-S.FLAME_TRAIL :]
         elif self.phase in ("ready", "windup"):
             self.ball = S.OPPONENT_HIT[self.opp_pos]
             self.ball_h = 0
@@ -279,6 +317,14 @@ class Match(Scene):
     def draw(self, surf):
         if self.background:
             surf.blit(self.background, (0, 0))
+            for prop, anim in self.props:
+                dy = 0
+                if (
+                    prop.sweep_dy and prop.period
+                ):  # start low, push up the lane, walk back down
+                    phase = (self.stage_time % prop.period) / prop.period
+                    dy = round(prop.sweep_dy * abs(2 * phase - 1))
+                surf.blit(anim.image, (prop.x, prop.y + dy))
         else:
             surf.fill(S.COL_FLOOR)
         # The opponent stands behind the table, so draw them first: their feet
@@ -286,6 +332,7 @@ class Match(Scene):
         opp = self.opp_anim.image
         surf.blit(opp, opp.get_rect(midbottom=S.OPPONENT_FEET[self.opp_pos]))
         surf.blit(self.table, S.TABLE_SPRITE_POS)
+        self._draw_flames(surf)
         self._draw_ball_shadow(surf)
         surf.blit(self.net, S.NET_SPRITE_POS)
         self.scoreboard.draw(surf)
@@ -307,6 +354,23 @@ class Match(Scene):
         if self.last_target is not None:  # after a miss, show which key was right
             return self.last_target
         return None
+
+    def _draw_flames(self, surf):
+        """The smash's fire trail: blobs along the ball's recent path, hot near the ball."""
+        # Only while the ball is actually flying or bouncing, never during the windup.
+        if not (self.smash and self.phase in ("incoming", "window")):
+            return
+        n = len(self.trail)
+        for i, (x, y) in enumerate(self.trail):
+            age = n - 1 - i  # 0 = newest
+            colour = S.COL_FLAMES[
+                min(age * len(S.COL_FLAMES) // max(n, 1), len(S.COL_FLAMES) - 1)
+            ]
+            radius = max(1, 4 - age // 3)
+            jitter = random.randint(-1, 1)  # flicker
+            pygame.draw.circle(
+                surf, colour, (round(x) + jitter, round(y) - age // 2), radius
+            )
 
     def _ball_visible(self):
         return self.phase not in ("point", "over", "done")

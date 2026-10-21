@@ -82,6 +82,8 @@ class GLRenderer:
         self._set("u_flash", fx.flash_amount)
         self._set("u_flash_color", fx.flash_color)
         self._set("u_crt", 1 if fx.crt else 0)
+        self._set("u_ripple", fx.ripple_progress)
+        self._set("u_ripple_center", fx.ripple_center)
 
         self.ctx.viewport = (0, 0, *self.window_size)
         self.ctx.clear(0.0, 0.0, 0.0)

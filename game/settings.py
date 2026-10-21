@@ -87,6 +87,12 @@ EARLY_PRESS_IS_MISS = True
 SERVE_POSITION = 1  # opponent always serves from top left
 MISS_SHAKE = (3, 0.3)
 RETURN_FLASH = 0.25
+SMASH_FLASH = 0.45  # the smash: orange flash, bigger shake and a shockwave ripple
+SMASH_FLASH_COLOR = "#F83800"
+SMASH_SHAKE = (4, 0.35)
+SMASH_RIPPLE_TIME = 0.6
+FLAME_TRAIL = 10  # how many past ball positions the smash's flames follow
+COL_FLAMES = ["#F83800", "#E45C10", "#AC7C00"]  # hot to cool
 
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
@@ -95,9 +101,7 @@ BALL_SQUASH_TIME = 0.06  # squashed-ball frame when it bounces on your side
 FLIP_TIME = 0.25  # flip-board card animation
 MESSAGE_Y = 70  # where messages like "Too late!" appear
 MENU_LINE = 12  # pixels between menu options
-MOP_CHANCE = (
-    0.25  # per second: opponents with a "mop" animation wipe their brow while waiting
-)
+FIDGET_CHANCE = 0.25  # per second: opponents with a "fidget" animation (towel mop, hair flip) do it while waiting
 
 # ---------------------------------------------------------------------------
 # Table layout (internal pixels)

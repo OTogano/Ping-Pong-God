@@ -10,6 +10,8 @@ uniform float u_time;         // seconds since start
 uniform float u_flash;        // 0..1, brightens the screen on a hit
 uniform vec3 u_flash_color;
 uniform int u_crt;            // 1 = CRT filter on
+uniform float u_ripple;       // shockwave progress 0..1 (outside that range = no ripple)
+uniform vec2 u_ripple_center; // where it starts, in texture coordinates (0..1, top-left origin)
 
 // Bend the picture slightly like a curved tube screen.
 vec2 curve(vec2 uv) {
@@ -29,7 +31,22 @@ void main() {
         }
     }
 
+    // Shockwave: a ring expands from the impact point and pushes the picture
+    // outward as it passes, fading as it grows.
+    float ring = 0.0;
+    if (u_ripple >= 0.0 && u_ripple <= 1.0) {
+        vec2 aspect = vec2(u_canvas_size.x / u_canvas_size.y, 1.0);   // keep the ring round
+        vec2 d = (uv - u_ripple_center) * aspect;
+        float dist = length(d);
+        float x = (dist - u_ripple * 0.9) / 0.07;                      // position across the ring band
+        if (abs(x) < 1.0 && dist > 0.0) {
+            ring = (1.0 - abs(x)) * (1.0 - u_ripple);
+            uv -= (d / dist) / aspect * ring * 0.03;
+        }
+    }
+
     vec3 color = texture(u_canvas, uv).rgb;
+    color = mix(color, u_flash_color, ring * 0.35);                   // the ring glows in the flash colour
 
     if (u_crt == 1) {
         // Darken the gap between each row of game pixels (scanlines).

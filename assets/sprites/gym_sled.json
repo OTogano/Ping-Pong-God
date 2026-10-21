@@ -1,0 +1,39 @@
+{
+ "frames": [
+  {
+   "filename": "gym_sled 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 30
+   },
+   "duration": 180
+  },
+  {
+   "filename": "gym_sled 1",
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 16,
+    "h": 30
+   },
+   "duration": 180
+  }
+ ],
+ "meta": {
+  "image": "gym_sled.png",
+  "size": {
+   "w": 32,
+   "h": 30
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 1,
+    "direction": "forward"
+   }
+  ]
+ }
+}

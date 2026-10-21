@@ -16,7 +16,7 @@ from game.gfx.ui import dim, panel
 from game.levels import LEVELS
 from game.scenes.base import Scene
 
-CARD_W, CARD_H, GAP = 54, 76, 8
+CARD_W, CARD_H, GAP = 60, 76, 4
 CARDS_Y = 52
 PORTRAIT_BOX = 30  # dark square behind the portrait
 SHAKE_TIME = 0.3  # a locked card shakes when you try to open it
