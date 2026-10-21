@@ -21,6 +21,9 @@ class Effects:
         self.ripple_center = (0.5, 0.5)
         self.ripple_progress = -1.0  # < 0 means no ripple
         self._ripple_time = 1.0
+        self.rewind_amount = 0.0  # 0..1: sepia, wavy "time running backwards" look
+        self._rewind_time = 1.0
+        self._rewind_left = 0.0
 
     def shake(self, strength=3.0, duration=0.25):
         """Shake the screen by up to `strength` canvas pixels, fading out."""
@@ -40,7 +43,17 @@ class Effects:
         self.ripple_progress = 0.0
         self._ripple_time = duration
 
+    def rewind(self, duration):
+        """Turn the screen sepia and wavy for `duration` seconds (fading in and out)."""
+        self._rewind_time = self._rewind_left = duration
+
     def update(self, dt):
+        if self._rewind_left > 0:
+            self._rewind_left = max(0.0, self._rewind_left - dt)
+            done = self._rewind_time - self._rewind_left
+            self.rewind_amount = min(1.0, done / 0.12, self._rewind_left / 0.12)
+        else:
+            self.rewind_amount = 0.0
         if self.ripple_progress >= 0:
             self.ripple_progress += dt / self._ripple_time
             if self.ripple_progress > 1:

@@ -12,6 +12,7 @@ uniform vec3 u_flash_color;
 uniform int u_crt;            // 1 = CRT filter on
 uniform float u_ripple;       // shockwave progress 0..1 (outside that range = no ripple)
 uniform vec2 u_ripple_center; // where it starts, in texture coordinates (0..1, top-left origin)
+uniform float u_rewind;       // 0..1: time running backwards (sepia, wavy, rolling bands)
 
 // Bend the picture slightly like a curved tube screen.
 vec2 curve(vec2 uv) {
@@ -45,6 +46,8 @@ void main() {
         }
     }
 
+    // Rewind: rows sway sideways like a warped old tape.
+    uv.x += sin(uv.y * 60.0 + u_time * 25.0) * 0.004 * u_rewind;
     vec3 color = texture(u_canvas, uv).rgb;
     color = mix(color, u_flash_color, ring * 0.35);                   // the ring glows in the flash colour
 
@@ -58,6 +61,16 @@ void main() {
         color *= 1.0 - 0.6 * dot(d, d);
     }
 
+    if (u_rewind > 0.0) {
+        // Sepia: old-photo browns, the classic "this is the past" look.
+        vec3 sepia = vec3(dot(color, vec3(0.393, 0.769, 0.189)),
+                          dot(color, vec3(0.349, 0.686, 0.168)),
+                          dot(color, vec3(0.272, 0.534, 0.131)));
+        color = mix(color, min(sepia, 1.0), u_rewind * 0.85);
+        // Dark bands rolling up the screen, like a tape rewinding.
+        float band = step(0.85, fract(uv.y * 6.0 + u_time * 3.0));
+        color *= 1.0 - 0.25 * band * u_rewind;
+    }
     color = mix(color, u_flash_color, clamp(u_flash, 0.0, 1.0));
     f_color = vec4(color, 1.0);
 }

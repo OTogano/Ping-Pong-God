@@ -104,6 +104,42 @@ COL_TENTACLE = "#940084"
 COL_TENTACLE_LIGHT = "#D800CC"
 COL_SUCKER = "#E40058"
 
+
+# The Ping Pong God's powers (final level)
+POWER_SHAKE = (2, 0.15)  # every one of his hits shakes the screen...
+POWER_RIPPLE_TIME = 0.45  # ...and sends out a shockwave
+COL_POWER_TRAIL = [
+    "#BCBCBC",
+    "#0078F8",
+    "#4428BC",
+]  # his ball's glowing trail, bright to dark
+COL_DIVINE = "#0078F8"  # flash when he bends the ball
+REDIRECT_AT = 0.3  # redirect: how far through the flight his hand bends the ball (0..1)
+REDIRECT_EXTRA = (
+    0.1  # the bent flight takes this much longer than what was left of the old one
+)
+REWIND_AT = 0.5  # rewind: how far through the flight time turns back
+REWIND_TIME = 0.7  # how long the ball takes to fly back to him
+ILLUSION_SPEEDS = (
+    0.55,
+    1.3,
+)  # illusions fly this many times as long as the real ball (random in range)
+GLIDE_FRACTION = (
+    0.8  # floating opponents glide to their next spot over this share of the return
+)
+# After a rewind he answers with a spike: told by the rewind and his move, so it can be brutal
+SPIKE_SPEED = 2.0  # flies this many times faster than his normal shot
+SPIKE_TELL = 0.15  # his windup lasts this much longer first
+SPIKE_FLASH = 0.5
+SPIKE_SHAKE = (5, 0.4)
+SPIKE_RIPPLE_TIME = 0.7
+# Storm on the final stage
+LIGHTNING_CHANCE = 0.15  # strikes per second (on average)
+LIGHTNING_TIME = 0.15  # how long a bolt stays on screen
+LIGHTNING_FLASH = 0.18  # screen flash (skipped while a ball is coming at you)
+COL_LIGHTNING = "#BCBCBC"
+COL_LIGHTNING_GLOW = "#6844FC"
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key

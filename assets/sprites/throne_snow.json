@@ -1,0 +1,100 @@
+{
+ "frames": [
+  {
+   "filename": "throne_snow 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 1",
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 2",
+   "frame": {
+    "x": 512,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 3",
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 4",
+   "frame": {
+    "x": 1024,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 5",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 6",
+   "frame": {
+    "x": 1536,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  },
+  {
+   "filename": "throne_snow 7",
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 256,
+    "h": 224
+   },
+   "duration": 70
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "throne_snow.png",
+  "size": {
+   "w": 2048,
+   "h": 224
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 7,
+    "direction": "forward"
+   }
+  ]
+ }
+}
