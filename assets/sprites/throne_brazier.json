@@ -1,0 +1,50 @@
+{
+ "frames": [
+  {
+   "filename": "throne_brazier 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 18
+   },
+   "duration": 110
+  },
+  {
+   "filename": "throne_brazier 1",
+   "frame": {
+    "x": 12,
+    "y": 0,
+    "w": 12,
+    "h": 18
+   },
+   "duration": 110
+  },
+  {
+   "filename": "throne_brazier 2",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 12,
+    "h": 18
+   },
+   "duration": 110
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "throne_brazier.png",
+  "size": {
+   "w": 36,
+   "h": 18
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 2,
+    "direction": "forward"
+   }
+  ]
+ }
+}

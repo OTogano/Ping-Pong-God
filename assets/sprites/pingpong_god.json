@@ -1,0 +1,772 @@
+{
+ "frames": [
+  {
+   "filename": "pingpong_god 0.aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 1.aseprite",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 2.aseprite",
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 3.aseprite",
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 4.aseprite",
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 110
+  },
+  {
+   "filename": "pingpong_god 5.aseprite",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 110
+  },
+  {
+   "filename": "pingpong_god 6.aseprite",
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 110
+  },
+  {
+   "filename": "pingpong_god 7.aseprite",
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 110
+  },
+  {
+   "filename": "pingpong_god 8.aseprite",
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 110
+  },
+  {
+   "filename": "pingpong_god 9.aseprite",
+   "frame": {
+    "x": 432,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 220
+  },
+  {
+   "filename": "pingpong_god 10.aseprite",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 220
+  },
+  {
+   "filename": "pingpong_god 11.aseprite",
+   "frame": {
+    "x": 528,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 100
+  },
+  {
+   "filename": "pingpong_god 12.aseprite",
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 140
+  },
+  {
+   "filename": "pingpong_god 13.aseprite",
+   "frame": {
+    "x": 624,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 120
+  },
+  {
+   "filename": "pingpong_god 14.aseprite",
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 140
+  },
+  {
+   "filename": "pingpong_god 15.aseprite",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 120
+  },
+  {
+   "filename": "pingpong_god 16.aseprite",
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 140
+  },
+  {
+   "filename": "pingpong_god 17.aseprite",
+   "frame": {
+    "x": 816,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 120
+  },
+  {
+   "filename": "pingpong_god 18.aseprite",
+   "frame": {
+    "x": 864,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 140
+  },
+  {
+   "filename": "pingpong_god 19.aseprite",
+   "frame": {
+    "x": 912,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 120
+  },
+  {
+   "filename": "pingpong_god 20.aseprite",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 21.aseprite",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 22.aseprite",
+   "frame": {
+    "x": 1056,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 23.aseprite",
+   "frame": {
+    "x": 1104,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 24.aseprite",
+   "frame": {
+    "x": 1152,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 25.aseprite",
+   "frame": {
+    "x": 1200,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 26.aseprite",
+   "frame": {
+    "x": 1248,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 27.aseprite",
+   "frame": {
+    "x": 1296,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 28.aseprite",
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 29.aseprite",
+   "frame": {
+    "x": 1392,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 30.aseprite",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 31.aseprite",
+   "frame": {
+    "x": 1488,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 32.aseprite",
+   "frame": {
+    "x": 1536,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 33.aseprite",
+   "frame": {
+    "x": 1584,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 34.aseprite",
+   "frame": {
+    "x": 1632,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 35.aseprite",
+   "frame": {
+    "x": 1680,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 36.aseprite",
+   "frame": {
+    "x": 1728,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 37.aseprite",
+   "frame": {
+    "x": 1776,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 38.aseprite",
+   "frame": {
+    "x": 1824,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 39.aseprite",
+   "frame": {
+    "x": 1872,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 40.aseprite",
+   "frame": {
+    "x": 1920,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 41.aseprite",
+   "frame": {
+    "x": 1968,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 42.aseprite",
+   "frame": {
+    "x": 2016,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 43.aseprite",
+   "frame": {
+    "x": 2064,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 44.aseprite",
+   "frame": {
+    "x": 2112,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 45.aseprite",
+   "frame": {
+    "x": 2160,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 46.aseprite",
+   "frame": {
+    "x": 2208,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 47.aseprite",
+   "frame": {
+    "x": 2256,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 48.aseprite",
+   "frame": {
+    "x": 2304,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 49.aseprite",
+   "frame": {
+    "x": 2352,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 90
+  },
+  {
+   "filename": "pingpong_god 50.aseprite",
+   "frame": {
+    "x": 2400,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 180
+  },
+  {
+   "filename": "pingpong_god 51.aseprite",
+   "frame": {
+    "x": 2448,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 180
+  },
+  {
+   "filename": "pingpong_god 52.aseprite",
+   "frame": {
+    "x": 2496,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 180
+  },
+  {
+   "filename": "pingpong_god 53.aseprite",
+   "frame": {
+    "x": 2544,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 180
+  },
+  {
+   "filename": "pingpong_god 54.aseprite",
+   "frame": {
+    "x": 2592,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 150
+  },
+  {
+   "filename": "pingpong_god 55.aseprite",
+   "frame": {
+    "x": 2640,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 150
+  },
+  {
+   "filename": "pingpong_god 56.aseprite",
+   "frame": {
+    "x": 2688,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 150
+  },
+  {
+   "filename": "pingpong_god 57.aseprite",
+   "frame": {
+    "x": 2736,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 150
+  },
+  {
+   "filename": "pingpong_god 58.aseprite",
+   "frame": {
+    "x": 2784,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 59.aseprite",
+   "frame": {
+    "x": 2832,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 60.aseprite",
+   "frame": {
+    "x": 2880,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 61.aseprite",
+   "frame": {
+    "x": 2928,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 200
+  },
+  {
+   "filename": "pingpong_god 62.aseprite",
+   "frame": {
+    "x": 2976,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 500
+  },
+  {
+   "filename": "pingpong_god 63.aseprite",
+   "frame": {
+    "x": 3024,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 900
+  },
+  {
+   "filename": "pingpong_god 64.aseprite",
+   "frame": {
+    "x": 3072,
+    "y": 0,
+    "w": 48,
+    "h": 60
+   },
+   "duration": 900
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "pingpong_god.png",
+  "size": {
+   "w": 3120,
+   "h": 60
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   },
+   {
+    "name": "fidget",
+    "from": 4,
+    "to": 8,
+    "direction": "forward"
+   },
+   {
+    "name": "serve",
+    "from": 9,
+    "to": 10,
+    "direction": "forward"
+   },
+   {
+    "name": "windup",
+    "from": 11,
+    "to": 11,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_d",
+    "from": 12,
+    "to": 13,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_f",
+    "from": 14,
+    "to": 15,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_j",
+    "from": 16,
+    "to": 17,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_k",
+    "from": 18,
+    "to": 19,
+    "direction": "forward"
+   },
+   {
+    "name": "redirect_d",
+    "from": 20,
+    "to": 25,
+    "direction": "forward"
+   },
+   {
+    "name": "redirect_f",
+    "from": 26,
+    "to": 31,
+    "direction": "forward"
+   },
+   {
+    "name": "redirect_j",
+    "from": 32,
+    "to": 37,
+    "direction": "forward"
+   },
+   {
+    "name": "redirect_k",
+    "from": 38,
+    "to": 43,
+    "direction": "forward"
+   },
+   {
+    "name": "illusion",
+    "from": 44,
+    "to": 47,
+    "direction": "forward"
+   },
+   {
+    "name": "rewind",
+    "from": 48,
+    "to": 49,
+    "direction": "forward"
+   },
+   {
+    "name": "point_won",
+    "from": 50,
+    "to": 53,
+    "direction": "forward"
+   },
+   {
+    "name": "point_lost",
+    "from": 54,
+    "to": 57,
+    "direction": "forward"
+   },
+   {
+    "name": "match_won",
+    "from": 58,
+    "to": 61,
+    "direction": "forward"
+   },
+   {
+    "name": "match_lost",
+    "from": 62,
+    "to": 64,
+    "direction": "forward"
+   }
+  ]
+ }
+}

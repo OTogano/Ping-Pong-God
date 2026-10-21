@@ -72,6 +72,24 @@ class Level:
     grab_chance: float = 0.0
     # Where the scoreboard stands on this stage (None = settings.SCOREBOARD_POS).
     scoreboard_pos: tuple | None = None
+    # The Ping Pong God -------------------------------------------------------------
+    true_name: str | None = None  # shown instead of `opponent` once you've beaten them
+    feet: tuple | None = None  # their own four spots (None = settings.OPPONENT_FEET)
+    over_table: bool = False  # drawn over the far end of the table (tall, floating)
+    floats: bool = False  # glides between spots and bobs in the air
+    power_hits: bool = False  # every hit: shockwave, shake and a glowing trail
+    # Tricks, one at most per shot. Each unlocks once either score reaches *_after.
+    redirect_chance: float = (
+        0.0  # after the hit, his hand bends the ball to another lane
+    )
+    illusion_chance: float = (
+        0.0  # fake balls fly with the real one (fakes cast no shadow)
+    )
+    illusion_after: int = 0
+    illusion_count: tuple = (2, 3)
+    rewind_chance: float = 0.0  # time runs back, he moves, and shoots again
+    rewind_after: int = 0
+    lightning: bool = False  # a storm: bolts in the sky and flashes now and then
 
 
 LEVELS = [
@@ -141,13 +159,38 @@ LEVELS = [
     ),
     Level(
         name="Final",
-        opponent="The Boss",
-        points_to_win=5,
-        windup_time=0.15,
-        fly_time=0.65,
+        opponent="♑□♎",
+        true_name="Odin",
+        points_to_win=10,
+        windup_time=0.25,
+        fly_time=0.6,
         hit_window=0.32,
         return_time=0.55,
-        opponent_miss_chance=0.1,
-        kit={"#004058": "#881400", "#E45C10": "#E40058", "#F83800": "#D800CC"},
-    ),
+        opponent_miss_chance=0.10,
+        sprite="pingpong_god",
+        portrait="pingpong_god_portrait",
+        background="throne_bg",
+        feet=((56, 86), (104, 62), (152, 62), (200, 86)),
+        over_table=True,
+        floats=True,
+        power_hits=True,
+        # escalation: redirect from the start, illusions from 2 points, rewind from 5
+        redirect_chance=0.25,
+        illusion_chance=0.25,
+        illusion_after=2,
+        illusion_count=(2, 3),
+        rewind_chance=0.2,
+        rewind_after=5,
+        scoreboard_pos=(34, 92),
+        lightning=True,
+        props=(
+            Prop("throne_runes", 0, 0),  # rune circles pulsing with light
+            Prop("throne_brazier", 90, 4),
+            Prop("throne_brazier", 154, 4),
+            Prop("valkyrie_a", -4, 18),
+            Prop("valkyrie_c", -4, 152),  # watching from the storm
+            Prop("valkyrie_b", 220, 64),
+            Prop("throne_snow", 0, 0),
+        ),
+    ),  # the blizzard, over everything on the stage
 ]

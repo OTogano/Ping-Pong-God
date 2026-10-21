@@ -92,9 +92,14 @@ class LevelSelectScene(Scene):
         if self.notice:
             self.font.draw(surf, self.notice, (S.WIDTH // 2, INFO_Y), color=S.COL_GOLD)
         elif self.app and self.app.progress.is_unlocked(self.index):
+            name = (
+                level.true_name
+                if level.true_name and self.app.progress.beaten[self.index]
+                else level.opponent
+            )
             self.font.draw(
                 surf,
-                f"vs {level.opponent}: first to {level.points_to_win}",
+                f"vs {name}: first to {level.points_to_win}",
                 (S.WIDTH // 2, INFO_Y),
             )
         else:
@@ -138,6 +143,8 @@ class LevelSelectScene(Scene):
         name_color = None if unlocked else S.COL_MENU_DIM
         self.font.draw(surf, LEVELS[i].name, (card.centerx, y + 42), color=name_color)
         opponent = LEVELS[i].opponent if unlocked else "???"
+        if progress is not None and progress.beaten[i] and LEVELS[i].true_name:
+            opponent = LEVELS[i].true_name  # beaten: his real name is known
         if self.font.width(opponent) > CARD_W - 4:  # e.g. "Coach Greg" -> two lines
             opponent = opponent.replace(" ", "\n", 1)
         self.font.draw(surf, opponent, (card.centerx, y + 54), color=S.COL_MENU_DIM)

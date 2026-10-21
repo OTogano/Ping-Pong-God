@@ -84,6 +84,7 @@ class GLRenderer:
         self._set("u_crt", 1 if fx.crt else 0)
         self._set("u_ripple", fx.ripple_progress)
         self._set("u_ripple_center", fx.ripple_center)
+        self._set("u_rewind", fx.rewind_amount)
 
         self.ctx.viewport = (0, 0, *self.window_size)
         self.ctx.clear(0.0, 0.0, 0.0)
@@ -108,6 +109,10 @@ class SoftwareRenderer:
             self.overlay.fill([round(c * 255) for c in fx.flash_color])
             self.overlay.set_alpha(round(fx.flash_amount * 255))
             self.window.blit(self.overlay, (0, 0))
+            if fx.rewind_amount > 0:  # no shaders here: just a brownish tint
+                self.overlay.fill((172, 124, 0))
+                self.overlay.set_alpha(round(fx.rewind_amount * 90))
+                self.window.blit(self.overlay, (0, 0))
         pygame.display.flip()
 
 

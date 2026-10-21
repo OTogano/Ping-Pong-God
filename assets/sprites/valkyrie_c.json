@@ -1,0 +1,180 @@
+{
+ "frames": [
+  {
+   "filename": "valkyrie_c 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 1",
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 2",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 3",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 4",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 5",
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 6",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 7",
+   "frame": {
+    "x": 280,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 8",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 9",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 10",
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 11",
+   "frame": {
+    "x": 440,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 12",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 13",
+   "frame": {
+    "x": 520,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 14",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  },
+  {
+   "filename": "valkyrie_c 15",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 40,
+    "h": 46
+   },
+   "duration": 130
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "valkyrie_c.png",
+  "size": {
+   "w": 640,
+   "h": 46
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 15,
+    "direction": "forward"
+   }
+  ]
+ }
+}
