@@ -49,23 +49,30 @@ The executable is created in `dist/`. `--add-data` bundles the art into the exe
 
 ## Project layout
 
-| File               | What it does                                             |
-|--------------------|----------------------------------------------------------|
-| `main.py`          | Window, pixel-perfect scaling and the main loop          |
-| `settings.py`      | Palette, controls, positions and all gameplay timings     |
-| `match.py`         | The rally state machine, input and drawing                |
-| `sprites.py`       | Loads Aseprite sprite sheets and recolours them           |
-| `assets/`          | Aseprite sources (`.aseprite`) and exported sheets        |
-| `nes_palette.hex`  | Game palette, also loadable in Aseprite                   |
+```
+main.py                  # entry point: window, scaling, main loop
+game/
+  settings.py            # palette, controls, positions, timings, resource_path()
+  scenes/
+    match.py             # one match: rally state machine, input, drawing
+  gfx/
+    sprites.py           # Aseprite sheet loading, recolouring, Animator
+assets/
+  sprites/               # .aseprite sources + exported .png/.json sheets
+  palettes/
+    nes_palette.hex      # game palette, also loadable in Aseprite
+```
 
-The game renders to a 256×224 canvas and scales it up 3× for crisp pixels.
+The game renders to a 256x224 canvas and scales it up 3x for crisp pixels.
+Run it from the project root with `python main.py`.
 
 ## Roadmap
 
 - [x] Playable prototype: telegraphed shots, hit window, scoring
-- [x] Player sprite (idle)
-- [ ] Swing animations
-- [ ] Title screen and level select
+- [x] Player sprite with idle, ready and swing animations
+- [ ] Title screen, level select with unlocking, pause menu
+- [ ] Persistent assets: table, umpire flip-board, pixel font, key icons
+- [ ] Shader post-processing (OpenGL)
 - [ ] Level 1: tutorial
 - [ ] Levels 2–4: opponents with tricks (decoy balls, reversed shots, ...) ending in a boss
 - [ ] Audio
