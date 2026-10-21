@@ -5,6 +5,8 @@ The renderer reads these values every frame and passes them to the shaders.
 
 import random
 
+from game import settings as S
+
 
 class Effects:
     def __init__(self):
@@ -16,6 +18,9 @@ class Effects:
         self.flash_color = (1.0, 1.0, 1.0)
         self._flash_fade = 1.0
         self.offset = (0.0, 0.0)
+        self.ripple_center = (0.5, 0.5)
+        self.ripple_progress = -1.0  # < 0 means no ripple
+        self._ripple_time = 1.0
 
     def shake(self, strength=3.0, duration=0.25):
         """Shake the screen by up to `strength` canvas pixels, fading out."""
@@ -29,7 +34,17 @@ class Effects:
         self.flash_amount = amount
         self._flash_fade = amount / duration
 
+    def ripple(self, x, y, duration=0.6):
+        """Start a shockwave ring at canvas pixel (x, y)."""
+        self.ripple_center = (x / S.WIDTH, y / S.HEIGHT)
+        self.ripple_progress = 0.0
+        self._ripple_time = duration
+
     def update(self, dt):
+        if self.ripple_progress >= 0:
+            self.ripple_progress += dt / self._ripple_time
+            if self.ripple_progress > 1:
+                self.ripple_progress = -1.0
         if self._shake_left > 0:
             self._shake_left = max(0.0, self._shake_left - dt)
             s = self._shake_strength * (self._shake_left / self._shake_time)

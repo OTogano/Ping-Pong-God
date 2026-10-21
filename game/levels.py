@@ -8,6 +8,19 @@ from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
+class Prop:
+    """An animated sprite on the stage, e.g. someone running on a treadmill.
+    assets/sprites/<sprite>.png + .json, looping its "idle" tag, drawn with its
+    top-left at (x, y). sweep_dy/period make it move down and back up again."""
+
+    sprite: str
+    x: int
+    y: int
+    sweep_dy: int = 0
+    period: float = 0.0
+
+
+@dataclass(frozen=True)
 class Level:
     name: str  # shown on the level card and at the start
     opponent: str  # opponent's name
@@ -31,6 +44,18 @@ class Level:
     # where the ball goes): the animation tag to play, and how often.
     special: str | None = None
     special_chance: float = 0.0
+    # Smash: a much faster shot (it still lands where the telegraph says).
+    # Uses the opponent's "windup_smash" (the tell) and "smash" animations.
+    smash_chance: float = 0.0  # chance per hit once unlocked
+    smash_after_points: int = (
+        0  # only after this many points have been played (she "warms up")
+    )
+    smash_speed: float = 1.0  # 2.0 = the ball flies twice as fast
+    smash_tell_extra: float = (
+        0.0  # the tell lasts this much longer than a normal windup
+    )
+    # Animated people and things on the stage (see Prop below).
+    props: tuple = ()
 
 
 LEVELS = [
@@ -52,15 +77,26 @@ LEVELS = [
     ),  # belly bump on 1 in 5 centre shots,
     Level(
         name="Level 2",
-        opponent="Rival 1",
+        opponent="Esmeralda",
         points_to_win=3,
         windup_time=0.25,
         fly_time=0.9,
         hit_window=0.45,
         return_time=0.7,
         opponent_miss_chance=0.2,
-        kit={"#004058": "#940084", "#E45C10": "#00A844", "#F83800": "#00B800"},
-    ),
+        sprite="esmeralda",
+        portrait="esmeralda_portrait",
+        background="gym2_bg",
+        smash_chance=0.35,
+        smash_after_points=0,
+        smash_speed=4.0,
+        smash_tell_extra=0.2,
+        props=(
+            Prop("gym_runner", 31, 16),  # on the second treadmill
+            Prop("gym_stretch", 1, 139),  # yoga mat
+            Prop("gym_sled", 236, 44, sweep_dy=140, period=9.0),
+        ),
+    ),  # up and down the turf,
     Level(
         name="Level 3",
         opponent="Rival 2",
