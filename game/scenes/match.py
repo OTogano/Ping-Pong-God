@@ -107,6 +107,10 @@ class Match(Scene):
         self.spike = False  # his answer after a rewind: a brutal fast shot
         self.bolt = []  # lightning bolt points while one is on screen
         self.bolt_t = 0.0
+        self.portals = None  # BOT's portals: (entry point, exit spot) while open
+        self.portal_t = 0.0  # time left before closed portals disappear
+        self.zap_t = 0.0  # a cannon shot flying: its light shows for this long
+        self.zap_to = (0.0, 0.0)
         self.illusions = []  # fake balls: [start, end, duration, time so far]
         self.pops = []  # where illusions vanished: [x, y, time left]
         self.bend = None  # a curved flight bends toward this point (redirect)
@@ -155,6 +159,7 @@ class Match(Scene):
         self.trick = None
         self.spike = False
         self.illusions = []
+        self.portals = None
         self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
         self._set_phase("ready", S.READY_TIME)
 
@@ -164,6 +169,9 @@ class Match(Scene):
         lvl = self.level
         self.trick = None if after_trick else self._pick_trick()
         self.trick_done = False
+        if self.trick == "charge":
+            self._start_charge()
+            return
         if not after_trick:
             self.speed = 1.0
             if random.random() < lvl.juggle_chance:
@@ -216,6 +224,14 @@ class Match(Scene):
     def _opp_draw_pos(self):
         """Where to draw the opponent's feet right now (gliding and bobbing if they float)."""
         to = self._opp_feet(self.opp_pos)
+        if self.level.robotic:  # straight line at full speed, then stop dead
+            slide = self.glide_time * S.ROBOT_SLIDE
+            k = min(self.glide_t / slide, 1.0) if slide > 0 else 1.0
+            x, y = lerp_pt(self.glide_from, to, k)
+            jolt = (
+                1 if 0 < self.glide_t - slide < 0.06 else 0
+            )  # a little clunk on arrival
+            return (x, y + jolt)
         if not self.level.floats:
             return to
         k = min(self.glide_t / self.glide_time, 1.0) if self.glide_time > 0 else 1.0
@@ -233,6 +249,16 @@ class Match(Scene):
             options.append(("illusion", lvl.illusion_chance))
         if lead >= lvl.rewind_after:
             options.append(("rewind", lvl.rewind_chance))
+        if lead >= lvl.tricks_after:  # BOT's cannon tricks
+            options += [
+                ("portal", lvl.portal_chance),
+                ("invisible", lvl.invisible_chance),
+            ]
+            if self.opp_pos in (
+                1,
+                2,
+            ):  # the charge shot only fires straight down a bottom lane
+                options.append(("charge", lvl.charge_chance))
         r = random.random()
         for name, chance in options:
             if r < chance:
@@ -268,6 +294,49 @@ class Match(Scene):
         self.flight = (self.ball, S.OPPONENT_HIT[new], S.BALL_ARC)
         fx.rewind(S.REWIND_TIME)
         self._set_phase("rewind", S.REWIND_TIME)
+
+    # ------------------------------------------------------------------ BOT's tricks
+    def _muzzle(self):
+        """Where BOT's cannon is on screen (bottom-left of his sprite)."""
+        x, y = self._opp_draw_pos()
+        return (x - 8, y - 9)
+
+    def _start_charge(self):
+        """Loads the ball into his cannon and charges for a random time: watch for the shot."""
+        self.speed = self.level.fly_time / S.CHARGE_FLIGHT
+        self.opp_anim.switch("charge")
+        self.opp_anim.play("load")
+        self._set_phase(
+            "windup", self.level.windup_time + random.uniform(*S.CHARGE_TIME)
+        )
+
+    def _fire_portals(self):
+        """His cannon shoots a portal into the ball's path on your half, and one opens at his end."""
+        self.trick_done = True
+        start, end, arc = self.flight
+        x, y = lerp_pt(start, end, S.PORTAL_AT)
+        entry = (
+            x,
+            y - math.sin(math.pi * S.PORTAL_AT) * arc,
+        )  # where the ball will be, in the air
+        exit_spot = random.choice([p for p in range(4) if p != self.opp_pos])
+        self.portals = (entry, exit_spot)
+        self.opp_anim.play("aim")
+        self.zap_t, self.zap_to = 0.12, entry
+
+    def _through_portal(self):
+        """The ball comes out of the exit portal: it flies from there as if he'd hit it from that spot."""
+        if self.portals is None:
+            return
+        exit_spot = self.portals[1]
+        self.target = S.LANDING_FOR[exit_spot]
+        self.flight = (
+            S.OPPONENT_HIT[exit_spot],
+            S.PLAYER_BOUNCE[self.target],
+            S.BALL_ARC,
+        )
+        self._set_phase("incoming", self.level.fly_time)
+        self.portal_t = S.PORTAL_CLOSE
 
     def _spawn_illusions(self):
         """Fake balls to the other lanes, some faster and some slower than the real one."""
@@ -335,6 +404,15 @@ class Match(Scene):
             fx.ripple(hit[0], hit[1], S.SMASH_RIPPLE_TIME)
             self._set_phase("incoming", self.level.fly_time / self.level.smash_speed)
             return
+        if self.trick == "charge":  # BOT fires the charged ball out of his cannon
+            hit = S.OPPONENT_HIT[self.opp_pos]
+            self.trail = []
+            self.opp_anim.play("fire")
+            fx.flash(S.CHARGE_FLASH, color=S.COL_GREEN)
+            fx.shake(*S.CHARGE_SHAKE)
+            fx.ripple(hit[0], hit[1], S.POWER_RIPPLE_TIME)
+            self._set_phase("incoming", self.level.fly_time / self.speed)
+            return
         if self.level.power_hits:  # the Ping Pong God: every hit lands like thunder
             hit = S.OPPONENT_HIT[self.opp_pos]
             self.trail = []
@@ -349,6 +427,9 @@ class Match(Scene):
             self.opp_anim.play(self.level.special)
         elif self.trick == "illusion":
             self.opp_anim.play("illusion")
+        elif self.trick == "invisible":  # BOT zaps the ball as he hits it: it vanishes
+            self.opp_anim.play("aim")
+            self.zap_t, self.zap_to = 0.12, S.OPPONENT_HIT[self.opp_pos]
         else:
             self.opp_anim.play(f"swing_{'dfjk'[self.opp_pos]}")
         self._set_phase("incoming", self.level.fly_time / self.speed)
@@ -404,6 +485,8 @@ class Match(Scene):
             self._begin_windup()
         elif self.phase == "windup":
             self._opponent_hits()
+        elif self.phase == "portal":
+            self._through_portal()
         elif self.phase == "rewind":  # shoots again from his new spot: a spike
             self.spike = True
             self.speed = S.SPIKE_SPEED
@@ -497,7 +580,7 @@ class Match(Scene):
         self.keys.press(pressed)
         self.player_anim.play(f"swing_{'dfjk'[pressed]}")
 
-        if self.phase == "incoming" and S.EARLY_PRESS_IS_MISS:
+        if self.phase in ("incoming", "portal") and S.EARLY_PRESS_IS_MISS:
             self._point(False, "Too early!")
         elif self.phase == "window":
             if pressed == self.target:
@@ -535,6 +618,15 @@ class Match(Scene):
         self.grab_out = max(0.0, self.grab_out - dt)
         self.glide_t += dt
         self._update_storm(dt)
+        self.zap_t = max(0.0, self.zap_t - dt)
+        if self.portal_t > 0:
+            self.portal_t = max(0.0, self.portal_t - dt)
+            if self.portal_t == 0:
+                self.portals = None
+        if (
+            self.phase == "windup" and self.trick == "charge"
+        ):  # the floor trembles as he charges
+            fx.shake(0.5 + self.t / self.duration, 0.05)
         for ill in self.illusions:
             ill[3] += dt
         for ill in [
@@ -562,8 +654,19 @@ class Match(Scene):
                     self._redirect()
                 elif self.trick == "rewind" and f >= S.REWIND_AT:
                     self._rewind()
+                elif self.trick == "portal" and f >= S.PORTAL_FIRE_AT:
+                    self._fire_portals()
+            if (
+                self.phase == "incoming"
+                and self.trick == "portal"
+                and self.portals is not None
+                and self.portal_t == 0
+                and f >= S.PORTAL_AT
+            ):
+                self._set_phase("portal", S.PORTAL_GAP)  # into the portal...
             if self.smash or (
-                self.level.power_hits and self.phase in ("incoming", "window")
+                (self.level.power_hits or self.trick == "charge")
+                and self.phase in ("incoming", "window")
             ):
                 self.trail = (
                     self.trail + [(self.ball[0], self.ball[1] - self.ball_h)]
@@ -615,6 +718,7 @@ class Match(Scene):
             feet = (feet[0] + random.choice((-1, 0, 1)), feet[1])
         surf.blit(me, me.get_rect(midbottom=feet))
         self._draw_grab(surf)
+        self._draw_portals(surf)
         self._draw_flames(surf)
         self._draw_illusions(surf)
         self._draw_ball(surf)
@@ -634,12 +738,19 @@ class Match(Scene):
     def _draw_flames(self, surf):
         """The smash's fire trail: blobs along the ball's recent path, hot near the ball."""
         # Only while the ball is actually flying or bouncing, never during the windup.
+        charged = self.trick == "charge"
         if not (
-            (self.smash or self.level.power_hits)
+            (self.smash or self.level.power_hits or charged)
             and self.phase in ("incoming", "window")
         ):
             return
-        colours = S.COL_FLAMES if self.smash else S.COL_POWER_TRAIL
+        colours = (
+            S.COL_FLAMES
+            if self.smash
+            else S.COL_CHARGE_TRAIL
+            if charged
+            else S.COL_POWER_TRAIL
+        )
         n = len(self.trail)
         for i, (x, y) in enumerate(self.trail):
             age = n - 1 - i  # 0 = newest
@@ -727,6 +838,43 @@ class Match(Scene):
             pygame.draw.lines(surf, S.COL_LIGHTNING_GLOW, False, self.bolt, 3)
             pygame.draw.lines(surf, S.COL_LIGHTNING, False, self.bolt, 1)
 
+    def _draw_portals(self, surf):
+        """Green swirling rings: the entry on your half, the exit at one of his spots."""
+        if (
+            self.phase == "windup"
+            and self.trick == "charge"
+            and self.opp_anim.current != "load"
+        ):
+            k = self.t / self.duration  # charging: a green orb swelling at the cannon
+            x, y = self._muzzle()
+            r = 1 + round(k * 4) + (self.stage_time * 20 % 2 > 1)
+            pygame.draw.circle(surf, S.COL_GREEN_DARK, (round(x), round(y)), r + 1)
+            pygame.draw.circle(surf, S.COL_GREEN, (round(x), round(y)), r)
+            surf.set_at((round(x), round(y)), "#BCBCBC")
+        if self.zap_t > 0:  # the cannon shot on its way
+            pygame.draw.line(surf, S.COL_GREEN, self._muzzle(), self.zap_to, 2)
+        if self.portals is None:
+            return
+        entry, exit_spot = self.portals
+        size = (
+            self.portal_t / S.PORTAL_CLOSE if self.portal_t > 0 else 1.0
+        )  # shrinking when closing
+        for x, y in (entry, S.OPPONENT_HIT[exit_spot]):
+            ring = pygame.Rect(0, 0, max(2, round(14 * size)), max(2, round(18 * size)))
+            ring.center = (round(x), round(y))
+            pygame.draw.ellipse(surf, "#000000", ring.inflate(2, 2))
+            pygame.draw.ellipse(surf, S.COL_GREEN_DARK, ring)
+            pygame.draw.ellipse(surf, S.COL_GREEN, ring, 2)
+            for k in range(4):  # sparks spinning around the rim
+                a = self.stage_time * 6 + k * math.pi / 2
+                surf.set_at(
+                    (
+                        round(x + math.cos(a) * ring.w / 2),
+                        round(y + math.sin(a) * ring.h / 2),
+                    ),
+                    "#BCBCBC",
+                )
+
     def _draw_illusions(self, surf):
         """Fake balls look exactly like the real one, except they cast no shadow."""
         for start, end, dur, t in self.illusions:
@@ -742,6 +890,14 @@ class Match(Scene):
                 surf.set_at((round(x) + dx, round(y) + dy), S.COL_DIVINE)
 
     def _ball_visible(self):
+        if self.phase == "portal":  # inside the portal
+            return False
+        if (
+            self.phase in ("ready", "windup")
+            and self.trick == "charge"
+            and self.opp_anim.current != "load"
+        ):
+            return False  # loaded in BOT's cannon
         return self.phase not in ("point", "over", "done")
 
     def _draw_ball_shadow(self, surf):
@@ -755,6 +911,8 @@ class Match(Scene):
     def _draw_ball(self, surf):
         if not self._ball_visible():
             return
+        if self.trick == "invisible" and self.phase == "incoming":
+            return  # only its shadow gives it away
         bx, by = self.ball
         image = self.ball_squash if self.squash > 0 else self.ball_img
         surf.blit(image, image.get_rect(center=(round(bx), round(by - self.ball_h))))

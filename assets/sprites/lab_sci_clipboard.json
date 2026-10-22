@@ -1,0 +1,120 @@
+{
+ "frames": [
+  {
+   "filename": "lab_sci_clipboard 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 220
+  },
+  {
+   "filename": "lab_sci_clipboard 1",
+   "frame": {
+    "x": 18,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 2",
+   "frame": {
+    "x": 36,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 3",
+   "frame": {
+    "x": 54,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 4",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 5",
+   "frame": {
+    "x": 90,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 6",
+   "frame": {
+    "x": 108,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 7",
+   "frame": {
+    "x": 126,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 160
+  },
+  {
+   "filename": "lab_sci_clipboard 8",
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 500
+  },
+  {
+   "filename": "lab_sci_clipboard 9",
+   "frame": {
+    "x": 162,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 500
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "lab_sci_clipboard.png",
+  "size": {
+   "w": 180,
+   "h": 26
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 9,
+    "direction": "forward"
+   }
+  ]
+ }
+}

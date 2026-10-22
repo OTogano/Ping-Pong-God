@@ -1,0 +1,50 @@
+{
+ "frames": [
+  {
+   "filename": "lab_flasks 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 26
+   },
+   "duration": 140
+  },
+  {
+   "filename": "lab_flasks 1",
+   "frame": {
+    "x": 12,
+    "y": 0,
+    "w": 12,
+    "h": 26
+   },
+   "duration": 140
+  },
+  {
+   "filename": "lab_flasks 2",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 12,
+    "h": 26
+   },
+   "duration": 140
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "lab_flasks.png",
+  "size": {
+   "w": 36,
+   "h": 26
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 2,
+    "direction": "forward"
+   }
+  ]
+ }
+}

@@ -21,6 +21,8 @@ CARDS_Y = 52
 PORTRAIT_BOX = 30  # dark square behind the portrait
 SHAKE_TIME = 0.3  # a locked card shakes when you try to open it
 INFO_Y = 150  # line under the cards: opponent, points to win, or why it's locked
+EDGE = 10  # when the row is wider than the screen, keep this much room at the ends
+SCROLL_SPEED = 12  # how quickly the row slides to the selected card
 
 
 class LevelSelectScene(Scene):
@@ -47,6 +49,15 @@ class LevelSelectScene(Scene):
         self.index = index
         self.shake = 0.0
         self.notice = ""
+        self.scroll = self._row_x()  # x of the first card; slides toward _row_x()
+
+    def _row_x(self):
+        """Where the first card should be so the selected one is on screen (centred if possible)."""
+        row_w = len(LEVELS) * CARD_W + (len(LEVELS) - 1) * GAP
+        if row_w <= S.WIDTH:
+            return (S.WIDTH - row_w) / 2
+        x = S.WIDTH / 2 - CARD_W / 2 - self.index * (CARD_W + GAP)
+        return min(EDGE, max(S.WIDTH - EDGE - row_w, x))
 
     # ---------------------------------------------------------------- input
     def handle_event(self, event):
@@ -75,15 +86,33 @@ class LevelSelectScene(Scene):
 
     def update(self, dt):
         self.shake = max(0.0, self.shake - dt)
+        self.scroll += (self._row_x() - self.scroll) * min(1.0, dt * SCROLL_SPEED)
 
     # ---------------------------------------------------------------- draw
     def draw(self, surf):
         surf.blit(self.background, (0, 0))
         dim(surf)
         self.font.draw(surf, "Select level", (S.WIDTH // 2, 16))
-        x0 = (S.WIDTH - (len(LEVELS) * CARD_W + (len(LEVELS) - 1) * GAP)) // 2
+        x0 = round(self.scroll)
         for i in range(len(LEVELS)):
             self._draw_card(surf, i, x0 + i * (CARD_W + GAP))
+        # Arrows when there are more cards off either side.
+        if x0 < 0:
+            self.font.draw(
+                surf,
+                "<",
+                (4, CARDS_Y + CARD_H // 2 - 4),
+                align="left",
+                color=S.COL_GOLD,
+            )
+        if x0 + len(LEVELS) * (CARD_W + GAP) - GAP > S.WIDTH:
+            self.font.draw(
+                surf,
+                ">",
+                (S.WIDTH - 9, CARDS_Y + CARD_H // 2 - 4),
+                align="left",
+                color=S.COL_GOLD,
+            )
 
         # Black strips behind the info line and the controls so they stay readable.
         panel(surf, pygame.Rect(-1, INFO_Y - 5, S.WIDTH + 2, 18))
