@@ -1,0 +1,530 @@
+{
+ "frames": [
+  {
+   "filename": "bot 0.aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 600
+  },
+  {
+   "filename": "bot 1.aseprite",
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 90
+  },
+  {
+   "filename": "bot 2.aseprite",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 600
+  },
+  {
+   "filename": "bot 3.aseprite",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 90
+  },
+  {
+   "filename": "bot 4.aseprite",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 5.aseprite",
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 6.aseprite",
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 7.aseprite",
+   "frame": {
+    "x": 280,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 150
+  },
+  {
+   "filename": "bot 8.aseprite",
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 9.aseprite",
+   "frame": {
+    "x": 360,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 10.aseprite",
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bot 11.aseprite",
+   "frame": {
+    "x": 440,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "bot 12.aseprite",
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bot 13.aseprite",
+   "frame": {
+    "x": 520,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "bot 14.aseprite",
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bot 15.aseprite",
+   "frame": {
+    "x": 600,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "bot 16.aseprite",
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bot 17.aseprite",
+   "frame": {
+    "x": 680,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 140
+  },
+  {
+   "filename": "bot 18.aseprite",
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bot 19.aseprite",
+   "frame": {
+    "x": 760,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 20.aseprite",
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 21.aseprite",
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "bot 22.aseprite",
+   "frame": {
+    "x": 880,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 23.aseprite",
+   "frame": {
+    "x": 920,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 24.aseprite",
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 25.aseprite",
+   "frame": {
+    "x": 1000,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 26.aseprite",
+   "frame": {
+    "x": 1040,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 80
+  },
+  {
+   "filename": "bot 27.aseprite",
+   "frame": {
+    "x": 1080,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 260
+  },
+  {
+   "filename": "bot 28.aseprite",
+   "frame": {
+    "x": 1120,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "bot 29.aseprite",
+   "frame": {
+    "x": 1160,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "bot 30.aseprite",
+   "frame": {
+    "x": 1200,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "bot 31.aseprite",
+   "frame": {
+    "x": 1240,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 160
+  },
+  {
+   "filename": "bot 32.aseprite",
+   "frame": {
+    "x": 1280,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 110
+  },
+  {
+   "filename": "bot 33.aseprite",
+   "frame": {
+    "x": 1320,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 110
+  },
+  {
+   "filename": "bot 34.aseprite",
+   "frame": {
+    "x": 1360,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 110
+  },
+  {
+   "filename": "bot 35.aseprite",
+   "frame": {
+    "x": 1400,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 110
+  },
+  {
+   "filename": "bot 36.aseprite",
+   "frame": {
+    "x": 1440,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 37.aseprite",
+   "frame": {
+    "x": 1480,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 200
+  },
+  {
+   "filename": "bot 38.aseprite",
+   "frame": {
+    "x": 1520,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 120
+  },
+  {
+   "filename": "bot 39.aseprite",
+   "frame": {
+    "x": 1560,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 120
+  },
+  {
+   "filename": "bot 40.aseprite",
+   "frame": {
+    "x": 1600,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 700
+  },
+  {
+   "filename": "bot 41.aseprite",
+   "frame": {
+    "x": 1640,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   "duration": 700
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "bot.png",
+  "size": {
+   "w": 1680,
+   "h": 40
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   },
+   {
+    "name": "fidget",
+    "from": 4,
+    "to": 7,
+    "direction": "forward"
+   },
+   {
+    "name": "serve",
+    "from": 8,
+    "to": 9,
+    "direction": "forward"
+   },
+   {
+    "name": "windup",
+    "from": 10,
+    "to": 10,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_d",
+    "from": 11,
+    "to": 12,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_f",
+    "from": 13,
+    "to": 14,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_j",
+    "from": 15,
+    "to": 16,
+    "direction": "forward"
+   },
+   {
+    "name": "swing_k",
+    "from": 17,
+    "to": 18,
+    "direction": "forward"
+   },
+   {
+    "name": "aim",
+    "from": 19,
+    "to": 21,
+    "direction": "forward"
+   },
+   {
+    "name": "load",
+    "from": 22,
+    "to": 22,
+    "direction": "forward"
+   },
+   {
+    "name": "charge",
+    "from": 23,
+    "to": 26,
+    "direction": "forward"
+   },
+   {
+    "name": "fire",
+    "from": 27,
+    "to": 27,
+    "direction": "forward"
+   },
+   {
+    "name": "point_won",
+    "from": 28,
+    "to": 31,
+    "direction": "forward"
+   },
+   {
+    "name": "point_lost",
+    "from": 32,
+    "to": 35,
+    "direction": "forward"
+   },
+   {
+    "name": "match_won",
+    "from": 36,
+    "to": 37,
+    "direction": "forward"
+   },
+   {
+    "name": "match_lost",
+    "from": 38,
+    "to": 41,
+    "direction": "forward"
+   }
+  ]
+ }
+}

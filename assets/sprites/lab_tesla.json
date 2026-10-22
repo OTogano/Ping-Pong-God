@@ -1,0 +1,60 @@
+{
+ "frames": [
+  {
+   "filename": "lab_tesla 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 26,
+    "h": 40
+   },
+   "duration": 70
+  },
+  {
+   "filename": "lab_tesla 1",
+   "frame": {
+    "x": 26,
+    "y": 0,
+    "w": 26,
+    "h": 40
+   },
+   "duration": 90
+  },
+  {
+   "filename": "lab_tesla 2",
+   "frame": {
+    "x": 52,
+    "y": 0,
+    "w": 26,
+    "h": 40
+   },
+   "duration": 60
+  },
+  {
+   "filename": "lab_tesla 3",
+   "frame": {
+    "x": 78,
+    "y": 0,
+    "w": 26,
+    "h": 40
+   },
+   "duration": 110
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "lab_tesla.png",
+  "size": {
+   "w": 104,
+   "h": 40
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   }
+  ]
+ }
+}

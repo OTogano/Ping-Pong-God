@@ -90,6 +90,16 @@ class Level:
     rewind_chance: float = 0.0  # time runs back, he moves, and shoots again
     rewind_after: int = 0
     lightning: bool = False  # a storm: bolts in the sky and flashes now and then
+    # BOT ----------------------------------------------------------------------------
+    robotic: bool = False  # slides between spots in straight lines and stops dead
+    tricks_after: int = 0  # his tricks unlock once either score reaches this
+    portal_chance: float = (
+        0.0  # the ball goes into a portal on your half and comes out of one at his end
+    )
+    invisible_chance: float = 0.0  # the ball turns invisible: only its shadow shows
+    charge_chance: float = (
+        0.0  # from a bottom spot: loads the ball in his cannon and fires it
+    )
 
 
 LEVELS = [
@@ -122,7 +132,7 @@ LEVELS = [
         portrait="esmeralda_portrait",
         background="gym2_bg",
         smash_chance=0.35,
-        smash_after_points=0,
+        smash_after_points=1,
         smash_speed=4.0,
         smash_tell_extra=0.2,
         props=(
@@ -155,6 +165,31 @@ LEVELS = [
             Prop("ship_sea_r", 233, 0),
             Prop("ship_cannon_l", 0, 48),  # pirates firing cannons
             Prop("ship_cannon_r", 192, 96),
+        ),
+    ),
+    Level(
+        name="Level 4",
+        opponent="BOT",
+        points_to_win=7,
+        windup_time=0.25,
+        fly_time=0.7,
+        hit_window=0.35,
+        return_time=0.6,
+        opponent_miss_chance=0.2,
+        sprite="bot",
+        portrait="bot_portrait",
+        background="lab_bg",
+        robotic=True,
+        tricks_after=1,  # all tricks once the first point is scored
+        portal_chance=0.25,
+        invisible_chance=0.25,
+        charge_chance=0.3,
+        props=(
+            Prop("lab_flasks", 2, 50),  # bubbling on the bench
+            Prop("lab_tesla", 228, 16),  # crackling
+            Prop("lab_sci_flask", 16, 50),  # scientists running experiments...
+            Prop("lab_sci_clipboard", 234, 96),  # ...and one writing down the match
+            Prop("lab_sci_observer", 222, 180),
         ),
     ),
     Level(

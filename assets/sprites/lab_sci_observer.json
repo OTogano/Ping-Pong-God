@@ -1,0 +1,60 @@
+{
+ "frames": [
+  {
+   "filename": "lab_sci_observer 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 700
+  },
+  {
+   "filename": "lab_sci_observer 1",
+   "frame": {
+    "x": 18,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 300
+  },
+  {
+   "filename": "lab_sci_observer 2",
+   "frame": {
+    "x": 36,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 400
+  },
+  {
+   "filename": "lab_sci_observer 3",
+   "frame": {
+    "x": 54,
+    "y": 0,
+    "w": 18,
+    "h": 26
+   },
+   "duration": 900
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "image": "lab_sci_observer.png",
+  "size": {
+   "w": 72,
+   "h": 26
+  },
+  "frameTags": [
+   {
+    "name": "idle",
+    "from": 0,
+    "to": 3,
+    "direction": "forward"
+   }
+  ]
+ }
+}

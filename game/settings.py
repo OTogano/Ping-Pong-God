@@ -140,6 +140,28 @@ LIGHTNING_FLASH = 0.18  # screen flash (skipped while a ball is coming at you)
 COL_LIGHTNING = "#BCBCBC"
 COL_LIGHTNING_GLOW = "#6844FC"
 
+
+# BOT's cannon tricks (Level 4)
+ROBOT_SLIDE = (
+    0.6  # BOT slides to his next spot in this share of the move time, then stops dead
+)
+PORTAL_FIRE_AT = 0.1  # portal: how far into the flight his cannon fires the portals
+PORTAL_AT = (
+    0.72  # where along the flight the entry portal opens (past the net, on your half)
+)
+PORTAL_GAP = 0.15  # time the ball spends inside the portal
+PORTAL_CLOSE = 0.3  # portals shrink away after the ball comes out
+CHARGE_TIME = (
+    0.6,
+    1.4,
+)  # charge shot: how long he charges (random, so you can't count it)
+CHARGE_FLIGHT = 0.25  # ...and how long the shot takes: the fastest in the game
+CHARGE_FLASH = 0.4
+CHARGE_SHAKE = (5, 0.35)
+COL_GREEN = "#00B800"  # BOT's light: portals, zaps, the charge
+COL_GREEN_DARK = "#007800"
+COL_CHARGE_TRAIL = ["#BCBCBC", "#00B800", "#007800"]
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key
