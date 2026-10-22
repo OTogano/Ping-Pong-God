@@ -1,7 +1,7 @@
-"""The four levels. Each one is a list of settings the match reads.
+"""The levels: who you play, how fast, and on what stage.
 
-Opponent names, kits and backgrounds are placeholders until we design the
-opponents; the numbers are a first pass at a difficulty curve to tune by play.
+Each opponent's tricks (and the numbers that tune them) live in their own file
+in game/opponents/; `kind` says which one. A level with no kind plays straight.
 """
 
 from dataclasses import dataclass, field
@@ -30,6 +30,8 @@ class Level:
     hit_window: float  # time after the bounce in which you must press
     return_time: float  # your return travelling back to the opponent
     opponent_miss_chance: float  # chance the opponent misses each of your returns
+    kind: str | None = None  # their tricks: game/opponents/<kind>.py (None = none)
+    true_name: str | None = None  # shown instead of `opponent` once you've beaten them
     hints_until_score: int = (
         0  # key hints stay on until YOU have this many points (0 = off)
     )
@@ -40,66 +42,10 @@ class Level:
     # player's sprite recoloured with `kit`.
     sprite: str | None = None
     portrait: str | None = None
-    # A showy alternative to the normal swing on centre shots (it never changes
-    # where the ball goes): the animation tag to play, and how often.
-    special: str | None = None
-    special_chance: float = 0.0
-    # Smash: a much faster shot (it still lands where the telegraph says).
-    # Uses the opponent's "windup_smash" (the tell) and "smash" animations.
-    smash_chance: float = 0.0  # chance per hit once unlocked
-    smash_after_points: int = (
-        0  # only after this many points have been played (she "warms up")
+    scoreboard_pos: tuple | None = (
+        None  # where the scoreboard stands (None = settings.SCOREBOARD_POS)
     )
-    smash_speed: float = 1.0  # 2.0 = the ball flies twice as fast
-    smash_tell_extra: float = (
-        0.0  # the tell lasts this much longer than a normal windup
-    )
-    # Animated people and things on the stage (see Prop below).
-    props: tuple = ()
-    # Opponents who fill the whole far end (Captain Squidy) stay at this point
-    # (bottom-centre of their frame) instead of moving between OPPONENT_FEET, and are
-    # drawn over the far end of the table. If they have "windup_d".."windup_k"
-    # animations, the windup shows which paddle will hit.
-    anchor: tuple | None = None
-    # Juggle: he bats the ball between his paddles, then fires a fast shot from the
-    # LAST paddle that touched it (so it's still readable if you track the ball).
-    juggle_chance: float = 0.0
-    juggle_hops: tuple = (3, 5)  # how many hops (min, max)
-    juggle_hop_time: float = 0.2  # seconds per hop
-    juggle_speed: float = 1.0  # speed of the shot that follows (1.6 = 60% faster)
-    # Grab: a tentacle holds you during his windup. Press the right key once to
-    # break free, then again (in the hit window) to return the ball.
-    grab_chance: float = 0.0
-    # Where the scoreboard stands on this stage (None = settings.SCOREBOARD_POS).
-    scoreboard_pos: tuple | None = None
-    # The Ping Pong God -------------------------------------------------------------
-    true_name: str | None = None  # shown instead of `opponent` once you've beaten them
-    feet: tuple | None = None  # their own four spots (None = settings.OPPONENT_FEET)
-    over_table: bool = False  # drawn over the far end of the table (tall, floating)
-    floats: bool = False  # glides between spots and bobs in the air
-    power_hits: bool = False  # every hit: shockwave, shake and a glowing trail
-    # Tricks, one at most per shot. Each unlocks once either score reaches *_after.
-    redirect_chance: float = (
-        0.0  # after the hit, his hand bends the ball to another lane
-    )
-    illusion_chance: float = (
-        0.0  # fake balls fly with the real one (fakes cast no shadow)
-    )
-    illusion_after: int = 0
-    illusion_count: tuple = (2, 3)
-    rewind_chance: float = 0.0  # time runs back, he moves, and shoots again
-    rewind_after: int = 0
-    lightning: bool = False  # a storm: bolts in the sky and flashes now and then
-    # BOT ----------------------------------------------------------------------------
-    robotic: bool = False  # slides between spots in straight lines and stops dead
-    tricks_after: int = 0  # his tricks unlock once either score reaches this
-    portal_chance: float = (
-        0.0  # the ball goes into a portal on your half and comes out of one at his end
-    )
-    invisible_chance: float = 0.0  # the ball turns invisible: only its shadow shows
-    charge_chance: float = (
-        0.0  # from a bottom spot: loads the ball in his cannon and fires it
-    )
+    props: tuple = ()  # animated people and things on the stage (see Prop)
 
 
 LEVELS = [
@@ -113,34 +59,30 @@ LEVELS = [
         return_time=0.8,
         opponent_miss_chance=0.3,
         hints_until_score=1,
+        kind="greg",
         sprite="coach_greg",
         portrait="coach_greg_portrait",
         background="gym_floor",
-        special="belly",
-        special_chance=0.2,
-    ),  # belly bump on 1 in 5 centre shots,
+    ),
     Level(
         name="Level 2",
         opponent="Esmeralda",
-        points_to_win=5,
+        points_to_win=3,
         windup_time=0.25,
         fly_time=0.9,
         hit_window=0.45,
         return_time=0.7,
         opponent_miss_chance=0.2,
+        kind="esmeralda",
         sprite="esmeralda",
         portrait="esmeralda_portrait",
         background="gym2_bg",
-        smash_chance=0.35,
-        smash_after_points=1,
-        smash_speed=4.0,
-        smash_tell_extra=0.2,
         props=(
             Prop("gym_runner", 31, 16),  # on the second treadmill
             Prop("gym_stretch", 1, 139),  # yoga mat
             Prop("gym_sled", 236, 44, sweep_dy=140, period=9.0),
         ),
-    ),  # up and down the turf,
+    ),  # up and down the turf
     Level(
         name="Level 3",
         opponent="Captain Squidy",
@@ -150,15 +92,10 @@ LEVELS = [
         hit_window=0.4,
         return_time=0.6,
         opponent_miss_chance=0.15,
+        kind="squidy",
         sprite="squidy",
         portrait="squidy_portrait",
         background="ship_bg",
-        anchor=(128, 80),  # fills all four lanes
-        juggle_chance=0.5,
-        juggle_hops=(3, 5),
-        juggle_hop_time=0.1,
-        juggle_speed=3.0,
-        grab_chance=0.25,
         scoreboard_pos=(30, 92),  # on the deck, clear of the rail and sea
         props=(
             Prop("ship_sea_l", 0, 0),  # waves rolling past the hull
@@ -176,14 +113,10 @@ LEVELS = [
         hit_window=0.35,
         return_time=0.6,
         opponent_miss_chance=0.2,
+        kind="bot",
         sprite="bot",
         portrait="bot_portrait",
         background="lab_bg",
-        robotic=True,
-        tricks_after=1,  # all tricks once the first point is scored
-        portal_chance=0.25,
-        invisible_chance=0.25,
-        charge_chance=0.3,
         props=(
             Prop("lab_flasks", 2, 50),  # bubbling on the bench
             Prop("lab_tesla", 228, 16),  # crackling
@@ -201,23 +134,12 @@ LEVELS = [
         fly_time=0.6,
         hit_window=0.32,
         return_time=0.55,
-        opponent_miss_chance=0.10,
+        opponent_miss_chance=0.25,
+        kind="odin",
         sprite="pingpong_god",
         portrait="pingpong_god_portrait",
         background="throne_bg",
-        feet=((56, 86), (104, 62), (152, 62), (200, 86)),
-        over_table=True,
-        floats=True,
-        power_hits=True,
-        # escalation: redirect from the start, illusions from 2 points, rewind from 5
-        redirect_chance=0.25,
-        illusion_chance=0.25,
-        illusion_after=2,
-        illusion_count=(2, 3),
-        rewind_chance=0.2,
-        rewind_after=5,
         scoreboard_pos=(34, 92),
-        lightning=True,
         props=(
             Prop("throne_runes", 0, 0),  # rune circles pulsing with light
             Prop("throne_brazier", 90, 4),

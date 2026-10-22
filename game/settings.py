@@ -87,80 +87,11 @@ EARLY_PRESS_IS_MISS = True
 SERVE_POSITION = 1  # opponent always serves from top left
 MISS_SHAKE = (3, 0.3)
 RETURN_FLASH = 0.25
-SMASH_FLASH = 0.45  # the smash: orange flash, bigger shake and a shockwave ripple
-SMASH_FLASH_COLOR = "#F83800"
-SMASH_SHAKE = (4, 0.35)
-SMASH_RIPPLE_TIME = 0.6
-FLAME_TRAIL = 10  # how many past ball positions the smash's flames follow
-COL_FLAMES = ["#F83800", "#E45C10", "#AC7C00"]  # hot to cool
 
-
-# Captain Squidy's tricks (Level 3)
-JUGGLE_ARC = 14  # height of each hop between his paddles
-GRAB_TELL = 0.35  # the windup lasts this much longer while a tentacle reaches for you
-GRAB_REACH = 0.3  # time for the tentacle to reach you
-GRAB_RETRACT = 0.25  # time for it to slither back when it lets go
-COL_TENTACLE = "#940084"
-COL_TENTACLE_LIGHT = "#D800CC"
-COL_SUCKER = "#E40058"
-
-
-# The Ping Pong God's powers (final level)
-POWER_SHAKE = (2, 0.15)  # every one of his hits shakes the screen...
-POWER_RIPPLE_TIME = 0.45  # ...and sends out a shockwave
-COL_POWER_TRAIL = [
-    "#BCBCBC",
-    "#0078F8",
-    "#4428BC",
-]  # his ball's glowing trail, bright to dark
-COL_DIVINE = "#0078F8"  # flash when he bends the ball
-REDIRECT_AT = 0.3  # redirect: how far through the flight his hand bends the ball (0..1)
-REDIRECT_EXTRA = (
-    0.1  # the bent flight takes this much longer than what was left of the old one
-)
-REWIND_AT = 0.5  # rewind: how far through the flight time turns back
-REWIND_TIME = 0.7  # how long the ball takes to fly back to him
-ILLUSION_SPEEDS = (
-    0.55,
-    1.3,
-)  # illusions fly this many times as long as the real ball (random in range)
-GLIDE_FRACTION = (
-    0.8  # floating opponents glide to their next spot over this share of the return
-)
-# After a rewind he answers with a spike: told by the rewind and his move, so it can be brutal
-SPIKE_SPEED = 2.0  # flies this many times faster than his normal shot
-SPIKE_TELL = 0.15  # his windup lasts this much longer first
-SPIKE_FLASH = 0.5
-SPIKE_SHAKE = (5, 0.4)
-SPIKE_RIPPLE_TIME = 0.7
-# Storm on the final stage
-LIGHTNING_CHANCE = 0.15  # strikes per second (on average)
-LIGHTNING_TIME = 0.15  # how long a bolt stays on screen
-LIGHTNING_FLASH = 0.18  # screen flash (skipped while a ball is coming at you)
-COL_LIGHTNING = "#BCBCBC"
-COL_LIGHTNING_GLOW = "#6844FC"
-
-
-# BOT's cannon tricks (Level 4)
-ROBOT_SLIDE = (
-    0.6  # BOT slides to his next spot in this share of the move time, then stops dead
-)
-PORTAL_FIRE_AT = 0.1  # portal: how far into the flight his cannon fires the portals
-PORTAL_AT = (
-    0.72  # where along the flight the entry portal opens (past the net, on your half)
-)
-PORTAL_GAP = 0.15  # time the ball spends inside the portal
-PORTAL_CLOSE = 0.3  # portals shrink away after the ball comes out
-CHARGE_TIME = (
-    0.6,
-    1.4,
-)  # charge shot: how long he charges (random, so you can't count it)
-CHARGE_FLIGHT = 0.25  # ...and how long the shot takes: the fastest in the game
-CHARGE_FLASH = 0.4
-CHARGE_SHAKE = (5, 0.35)
-COL_GREEN = "#00B800"  # BOT's light: portals, zaps, the charge
-COL_GREEN_DARK = "#007800"
-COL_CHARGE_TRAIL = ["#BCBCBC", "#00B800", "#007800"]
+TRAIL_LENGTH = 10  # how many past ball positions a flaming/glowing trail follows
+GLIDE_FRACTION = 0.8  # opponents who travel between spots take this share of your return to get there
+# Each opponent's own numbers (smash, juggle, portals, rewind...) are at the top
+# of their file in game/opponents/.
 
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
