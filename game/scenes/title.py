@@ -2,6 +2,7 @@
 
 from game import controls
 from game import settings as S
+from game.audio import sfx
 from game.gfx.sprites import load_image
 from game.gfx.text import BitmapFont
 from game.scenes.base import Scene
@@ -18,6 +19,7 @@ class TitleScene(Scene):
         if not self.app:
             return
         if controls.pressed(event, controls.CONFIRM):
+            sfx.play("menu_select")
             from game.scenes.level_select import (
                 LevelSelectScene,  # avoids a circular import
             )

@@ -199,7 +199,7 @@ class Odin(Opponent):
         self.spike = False
         self._vanish_illusions()
 
-    def point_over(self):
+    def point_over(self, player_won):
         self._vanish_illusions()
 
     # ---------------------------------------------------------------- every frame

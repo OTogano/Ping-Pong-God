@@ -122,7 +122,7 @@ class Squidy(Opponent):
             m.point(False, "Wrong side!")
         return True
 
-    def point_over(self):
+    def point_over(self, player_won):
         self._release()
 
     def player_offset(self):

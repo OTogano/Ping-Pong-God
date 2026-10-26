@@ -15,13 +15,16 @@ import pygame
 
 from game import save
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.renderer import create_renderer
 
 
 class App:
     def __init__(self):
+        pygame.mixer.pre_init(*S.MIXER)
         pygame.init()
+        sfx.init()
         pygame.display.set_caption(S.TITLE)
         self.renderer = create_renderer((S.WIDTH * S.SCALE, S.HEIGHT * S.SCALE))
         print(f"Renderer: {self.renderer.name}")
@@ -31,6 +34,7 @@ class App:
         self.clock = pygame.time.Clock()
         self.stack = []
         self.progress = save.load()  # which levels are beaten / unlocked
+        sfx.muted = self.progress.muted
 
     # ---------------------------------------------------------------- scenes
     def _attach(self, scene):
