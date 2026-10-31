@@ -93,6 +93,8 @@ class Match(Scene):
         # First serve: show the level name and wait a little longer.
         self.message = f"{self.level.name}\nvs {self.level.opponent}"
         self.duration = S.INTRO_TIME
+        if self.opponent.intro_sound:
+            sfx.play(self.opponent.intro_sound)
 
     # ------------------------------------------------------------------ phases
     def set_phase(self, name, duration):

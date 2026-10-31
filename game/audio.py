@@ -8,6 +8,7 @@ A sound that isn't there yet is simply skipped, so the game runs fine with an
 incomplete set: drop new files into assets/sounds/ and they're used next launch.
 """
 
+import array
 import glob
 import os
 import random
@@ -53,9 +54,29 @@ class SoundEffects:
             self._sounds[name] = sounds
         return self._sounds[name]
 
-    def play(self, name, volume=1.0, fallback=None):
+    @staticmethod
+    def _tail(sound, seconds):
+        """A copy of just the last `seconds` of a sound, with a 10 ms fade-in so it doesn't click."""
+        mixer = pygame.mixer.get_init()
+        if mixer is None:  # no audio device: nothing to trim
+            return sound
+        rate, size, channels = mixer
+        frame = abs(size) // 8 * channels  # bytes per sample frame
+        raw = sound.get_raw()
+        keep = min(len(raw), int(seconds * rate) * frame)
+        samples = array.array(
+            "h", raw[len(raw) - keep :]
+        )  # 16-bit samples (settings.MIXER)
+        ramp = min(len(samples), int(0.01 * rate) * channels)
+        for i in range(ramp):
+            samples[i] = int(samples[i] * i / ramp)
+        return pygame.mixer.Sound(buffer=samples.tobytes())
+
+    def play(self, name, volume=1.0, fallback=None, last=None):
         """Play a sound; returns its channel (to stop it early) or None.
-        fallback: another sound to use if this one isn't there (e.g. "return" -> "hit")."""
+        fallback: another sound to use if this one isn't there (e.g. "return" -> "hit").
+        last: play only the final `last` seconds, so a build-up peaks right on time
+            (BOT's charge whine peaks exactly as he fires, however long he charges)."""
         if not self.enabled or self.muted:
             return None
         variants = self._variants(name) or (
@@ -64,6 +85,8 @@ class SoundEffects:
         if not variants:
             return None
         sound = random.choice(variants)
+        if last is not None:
+            sound = self._tail(sound, last)
         channel = sound.play()
         if channel is not None:
             channel.set_volume(volume * S.SFX_VOLUME * S.SOUND_VOLUMES.get(name, 1.0))

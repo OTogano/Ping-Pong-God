@@ -13,6 +13,7 @@ import random
 import pygame
 
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.geometry import bezier
 from game.opponents.base import Opponent
@@ -67,6 +68,7 @@ class Squidy(Opponent):
             for _ in range(random.randint(*JUGGLE_HOPS)):
                 path.append(random.choice([p for p in range(4) if p != path[-1]]))
             self.juggle_path = path
+            sfx.play("squidy_laugh")
             self._hop()
             return True
         if not after_trick and random.random() < GRAB_CHANCE:
@@ -81,6 +83,7 @@ class Squidy(Opponent):
         m = self.m
         a, b = self.juggle_path[0], self.juggle_path[1]
         m.opp_anim.play(f"bat_{'dfjk'[a]}")
+        sfx.play("squidy_tap", fallback="hit")
         m.flight = (S.OPPONENT_HIT[a], S.OPPONENT_HIT[b], JUGGLE_ARC)
         m.set_phase("juggle", HOP_TIME)
 
@@ -102,6 +105,7 @@ class Squidy(Opponent):
         self.grab_t = 0.0
         self.grab_lane = self.m.player_pos
         self.m.message = "Grabbed!"
+        sfx.play("squidy_grab")
 
     def _release(self):
         if self.grab:
@@ -117,6 +121,7 @@ class Squidy(Opponent):
         m.keys.press(lane)
         if lane == m.target:  # the right key breaks free
             self._release()
+            sfx.play("squidy_free")
             fx.shake(1, 0.1)
         else:
             m.point(False, "Wrong side!")
@@ -124,6 +129,8 @@ class Squidy(Opponent):
 
     def point_over(self, player_won):
         self._release()
+        if not player_won:
+            sfx.play("squidy_laugh")  # a haughty laugh at your expense
 
     def player_offset(self):
         if self.grab and self.grab_t > GRAB_REACH:  # struggling in the tentacle's grip

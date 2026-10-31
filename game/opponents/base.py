@@ -36,6 +36,7 @@ class Opponent:
     early_phases = ("incoming",)  # pressing during these phases is "Too early!"
     flight_phases = ()  # extra phases in which the ball flies along m.flight
     serve_sound = None  # played as each point starts (Greg's whistle)
+    intro_sound = None  # played once as the match starts
 
     def __init__(self, match):
         self.m = match
