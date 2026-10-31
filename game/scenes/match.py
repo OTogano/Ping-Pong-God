@@ -21,6 +21,7 @@ import pygame
 
 from game import controls
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.geometry import curve, lerp_pt
 from game.gfx.sprites import Animator, load_animations, load_image, load_strip, recolour
@@ -86,11 +87,14 @@ class Match(Scene):
         self.phase, self.duration, self.t = "ready", 0.0, 0.0
         self.flight = ((0.0, 0.0), (0.0, 0.0), 0.0)  # (start, end, arc height)
         self.won = self.unlocked = False  # set when the match ends
+        self.bounced = False
         self.opponent = make_opponent(self)  # their tricks: game/opponents/<kind>.py
         self._start_point()
         # First serve: show the level name and wait a little longer.
         self.message = f"{self.level.name}\nvs {self.level.opponent}"
         self.duration = S.INTRO_TIME
+        if self.opponent.intro_sound:
+            sfx.play(self.opponent.intro_sound)
 
     # ------------------------------------------------------------------ phases
     def set_phase(self, name, duration):
@@ -111,6 +115,8 @@ class Match(Scene):
         self.trail_colours = None
         self.opponent.reset()
         self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
+        if self.opponent.serve_sound:
+            sfx.play(self.opponent.serve_sound)
         self.set_phase("ready", S.READY_TIME)
 
     def begin_windup(self, after_trick=False):
@@ -135,6 +141,7 @@ class Match(Scene):
             S.BALL_ARC,
         )
         self.trail_colours = None
+        sfx.play("hit")
         if (
             not self.opponent.hit()
         ):  # True: they played their own animation (smash, ...)
@@ -153,9 +160,10 @@ class Match(Scene):
         )
         self.flight = (self.ball, S.OPPONENT_HIT[self.opp_pos], S.BALL_ARC)
         self.set_phase("return", self.level.return_time)
+        self.bounced = False  # your return bounces once on their half
 
     def point(self, player_won, message):
-        self.opponent.point_over()
+        self.opponent.point_over(player_won)
         if player_won:
             self.player_score += 1
         else:
@@ -163,6 +171,7 @@ class Match(Scene):
             self.last_target = self.target
             fx.shake(*S.MISS_SHAKE)
         self.scoreboard.set(self.opp_score, self.player_score)
+        sfx.play("flip")
         self.message = message
         self.opp_anim.after("point_lost" if player_won else "point_won")
         self.player_anim.after(
@@ -177,10 +186,20 @@ class Match(Scene):
             self.message = f"{message}\n{'You win!' if player_won else 'You lose!'}"
             if player_won and self.level.true_name:  # e.g. the hood comes down
                 self.message += f"\n{self.level.opponent} was {self.level.true_name}!"
+            sfx.play("match_won" if player_won else "match_lost")
+            self.opponent.match_over(player_won)
             if player_won and self.app:
                 self.unlocked = self.app.progress.mark_won(self.level_index)
             self.set_phase("over", S.RESULT_DELAY)
         else:
+            # The point's sound (on the last point of a match, the jingle plays instead).
+            if player_won:
+                sfx.play("point_won")
+            else:
+                sfx.play(
+                    "wrong" if message == "Wrong side!" else "point_lost",
+                    fallback="point_lost",
+                )
             self.set_phase("point", S.POINT_PAUSE)
 
     def _advance(self):
@@ -200,6 +219,7 @@ class Match(Scene):
                 S.WINDOW_ARC,
             )
             self.squash = S.BALL_SQUASH_TIME  # the ball just bounced on your side
+            sfx.play("bounce")
             self.set_phase("window", self.level.hit_window)
         elif self.phase == "window":
             self.point(False, "Too late!")
@@ -237,14 +257,17 @@ class Match(Scene):
 
     # ------------------------------------------------------------------ input
     def restart(self):
+        sfx.stop_all()
         if self.app:
             self.app.switch(Match(self.level_index))
 
     def next_level(self):
+        sfx.stop_all()
         if self.app:
             self.app.switch(Match(self.level_index + 1))
 
     def level_select(self):
+        sfx.stop_all()
         if self.app:
             self.app.switch(LevelSelectScene(self.level_index))
 
@@ -252,6 +275,8 @@ class Match(Scene):
         if event.type != pygame.KEYDOWN:
             return
         if controls.pressed(event, controls.BACK) and self.app:
+            sfx.pause()
+            sfx.play("pause")
             self.app.push(
                 PauseScene(
                     self.restart, self.level_select, self.app.renderer.supports_crt
@@ -275,6 +300,7 @@ class Match(Scene):
         elif self.phase == "window":
             if pressed == self.target:
                 fx.flash(S.RETURN_FLASH)
+                sfx.play("return", fallback="hit")
                 self._player_returns()
             else:
                 self.point(False, "Wrong side!")
@@ -318,6 +344,11 @@ class Match(Scene):
             self.ball_h = math.sin(math.pi * hop) * arc  # simple hop: up then down
             if self.phase == "incoming":
                 self.opponent.flight(f)  # mid-flight tricks
+            elif (
+                self.phase == "return" and f >= S.RETURN_BOUNCE_AT and not self.bounced
+            ):
+                self.bounced = True  # your return lands on their half
+                sfx.play("bounce", volume=S.FAR_BOUNCE_VOLUME)
             if self.trail_colours and self.phase in ("incoming", "window"):
                 self.trail = (
                     self.trail + [(self.ball[0], self.ball[1] - self.ball_h)]

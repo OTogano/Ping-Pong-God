@@ -13,7 +13,8 @@ only the ones it needs.
     flight(f)          every frame of an incoming ball, f = 0..1 of the way
     advance(phase)     a phase of your own just ended (juggle, portal, rewind...): True if handled
     returned()         the player hit it back
-    point_over()       someone just scored
+    point_over(won)    someone just scored (won: True if it was the player)
+    match_over(won)    the match is over
     press(lane)        a hit key was pressed: return True if you used it (Squidy's grab)
     update(dt)         every frame
     draw_stage(surf)   drawn behind the props (lightning in the sky)
@@ -34,6 +35,8 @@ class Opponent:
     behind_table = True  # drawn behind the table (False: over its far end)
     early_phases = ("incoming",)  # pressing during these phases is "Too early!"
     flight_phases = ()  # extra phases in which the ball flies along m.flight
+    serve_sound = None  # played as each point starts (Greg's whistle)
+    intro_sound = None  # played once as the match starts
 
     def __init__(self, match):
         self.m = match
@@ -93,7 +96,10 @@ class Opponent:
     def returned(self):
         pass
 
-    def point_over(self):
+    def point_over(self, player_won):
+        pass
+
+    def match_over(self, player_won):
         pass
 
     def reset(self):

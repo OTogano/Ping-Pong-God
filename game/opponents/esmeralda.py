@@ -3,6 +3,7 @@ twice as fast. It still lands where her position says."""
 
 import random
 
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.opponents.base import Opponent
 
@@ -30,6 +31,7 @@ class Esmeralda(Opponent):
         m = self.m
         m.trail = []  # forget the last smash's flames (they were at your end)
         m.opp_anim.switch("windup_smash")
+        sfx.play("esme_tell")
         m.set_phase("windup", m.level.windup_time + SMASH_TELL)
         return True
 
@@ -38,6 +40,7 @@ class Esmeralda(Opponent):
             return False
         m = self.m
         m.opp_anim.play("smash")
+        sfx.play("esme_smash")
         x, y = m.flight[0]
         fx.flash(SMASH_FLASH, color=SMASH_FLASH_COLOR)
         fx.shake(*SMASH_SHAKE)

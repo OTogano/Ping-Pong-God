@@ -7,6 +7,7 @@ import pygame
 
 from game import controls
 from game import settings as S
+from game.audio import sfx
 from game.gfx.sprites import load_image, load_strip
 
 
@@ -142,9 +143,12 @@ class Menu:
     def handle_event(self, event):
         if controls.pressed(event, controls.UP):
             self.index = (self.index - 1) % len(self.items)
+            sfx.play("menu_move")
         elif controls.pressed(event, controls.DOWN):
             self.index = (self.index + 1) % len(self.items)
+            sfx.play("menu_move")
         elif controls.pressed(event, controls.CONFIRM):
+            sfx.play("menu_select")
             self.items[self.index][1]()
 
     def labels(self):

@@ -14,6 +14,7 @@ import random
 import pygame
 
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.geometry import lerp_pt
 from game.opponents.base import Opponent
@@ -42,6 +43,7 @@ COL_CHARGE_TRAIL = ["#BCBCBC", "#00B800", "#007800"]
 
 
 class Bot(Opponent):
+    intro_sound = "bot_powerup"
     early_phases = (
         "incoming",
         "portal",
@@ -54,10 +56,13 @@ class Bot(Opponent):
         self.portals = None  # (entry point, exit spot) while open
         self.portal_t = 0.0  # time left before closed portals disappear
         self.zap_t = 0.0  # a cannon shot flying: its light shows for this long
+        self.whine = None
         self.zap_to = (0.0, 0.0)
 
     # ---------------------------------------------------------------- robot movement
     def move_to(self, pos, duration):
+        if pos != self.m.opp_pos:
+            sfx.play("bot_move")
         self.glide_from = self.draw_pos()
         self.m.opp_pos = pos
         self.glide_t, self.glide_time = 0.0, duration
@@ -100,7 +105,11 @@ class Bot(Opponent):
         m.speed = m.level.fly_time / CHARGE_FLIGHT
         m.opp_anim.switch("charge")
         m.opp_anim.play("load")
-        m.set_phase("windup", m.level.windup_time + random.uniform(*CHARGE_TIME))
+        charge = m.level.windup_time + random.uniform(*CHARGE_TIME)
+        self.whine = sfx.play(
+            "bot_charge", last=charge
+        )  # ends on its peak exactly as he fires
+        m.set_phase("windup", charge)
         return True
 
     def hit(self):
@@ -108,6 +117,9 @@ class Bot(Opponent):
         if self.trick == "charge":  # fire the charged ball out of the cannon
             x, y = m.flight[0]
             m.opp_anim.play("fire")
+            if self.whine is not None:
+                self.whine.fadeout(60)
+            sfx.play("bot_blast")
             fx.flash(CHARGE_FLASH, color=COL_GREEN)
             fx.shake(*CHARGE_SHAKE)
             fx.ripple(x, y, CHARGE_RIPPLE_TIME)
@@ -115,6 +127,7 @@ class Bot(Opponent):
             return True
         if self.trick == "invisible":  # zap the ball as he hits it: it vanishes
             m.opp_anim.play("aim")
+            sfx.play("bot_zap")
             self.zap_t, self.zap_to = 0.12, m.flight[0]
             return True
         return False
@@ -141,6 +154,7 @@ class Bot(Opponent):
         exit_spot = random.choice([p for p in range(4) if p != m.opp_pos])
         self.portals = (entry, exit_spot)
         m.opp_anim.play("aim")
+        sfx.play("bot_portal")
         self.zap_t, self.zap_to = 0.12, entry
 
     def advance(self, phase):
@@ -159,6 +173,15 @@ class Bot(Opponent):
             m.set_phase("incoming", m.level.fly_time)
             self.portal_t = PORTAL_CLOSE
         return True
+
+    def point_over(self, player_won):
+        sfx.play(
+            "bot_glitch" if player_won else "bot_beep"
+        )  # glitches when you score, beeps when he does
+
+    def match_over(self, player_won):
+        if player_won:
+            sfx.play("bot_shutdown")
 
     # ---------------------------------------------------------------- the ball
     def _charging(self):

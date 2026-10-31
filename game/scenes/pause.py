@@ -2,8 +2,9 @@
 
 import pygame
 
-from game import controls
+from game import controls, save
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.text import BitmapFont
 from game.gfx.ui import Menu, dim, panel
@@ -17,7 +18,11 @@ class PauseScene(Scene):
         """restart / level_select: functions to call for those options.
         crt_available: False on the software renderer, which has no CRT shader."""
         self.font = BitmapFont()
-        items = [("Resume", self.resume), ("Restart", restart)]
+        items = [
+            ("Resume", self.resume),
+            ("Restart", restart),
+            (lambda: f"Sound: {'off' if sfx.muted else 'on'}", self.toggle_sound),
+        ]
         if crt_available:
             items.append(
                 (lambda: f"CRT filter: {'on' if fx.crt else 'off'}", self.toggle_crt)
@@ -27,7 +32,14 @@ class PauseScene(Scene):
 
     def resume(self):
         if self.app:
+            sfx.unpause()
             self.app.pop()
+
+    def toggle_sound(self):
+        sfx.toggle_mute()
+        if self.app:  # remembered between sessions
+            self.app.progress.muted = sfx.muted
+            save.save(self.app.progress)
 
     @staticmethod
     def toggle_crt():

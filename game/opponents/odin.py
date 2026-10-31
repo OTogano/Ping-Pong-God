@@ -15,6 +15,7 @@ import random
 import pygame
 
 from game import settings as S
+from game.audio import sfx
 from game.gfx.effects import fx
 from game.gfx.geometry import lerp_pt
 from game.opponents.base import Opponent
@@ -116,15 +117,18 @@ class Odin(Opponent):
         m = self.m
         x, y = m.flight[0]
         if self.spike:
+            sfx.play("god_spike")
             fx.flash(SPIKE_FLASH, color=COL_LIGHTNING)
             fx.shake(*SPIKE_SHAKE)
             fx.ripple(x, y, SPIKE_RIPPLE_TIME)
         else:
+            sfx.play("god_hit")
             fx.shake(*POWER_SHAKE)
             fx.ripple(x, y, POWER_RIPPLE_TIME)
         m.trail, m.trail_colours = [], COL_POWER_TRAIL
         if self.trick == "illusion":
             m.opp_anim.play("illusion")
+            sfx.play("god_illusion")
             return True
         return False
 
@@ -161,6 +165,7 @@ class Odin(Opponent):
         new = random.choice([p for p in range(4) if p != m.target])
         m.target = new
         m.opp_anim.play(f"redirect_{'dfjk'[new]}")
+        sfx.play("god_redirect")
         fx.flash(0.15, color=COL_DIVINE)
         here = m.ball
         ahead = lerp_pt(
@@ -176,6 +181,7 @@ class Odin(Opponent):
         self.trick_done = True
         self.illusions = []
         m.opp_anim.play("rewind")
+        sfx.play("god_rewind")
         new = random.choice([p for p in range(4) if p != m.opp_pos])
         self.move_to(new, REWIND_TIME)
         m.flight = (m.ball, S.OPPONENT_HIT[new], S.BALL_ARC)
@@ -199,7 +205,7 @@ class Odin(Opponent):
         self.spike = False
         self._vanish_illusions()
 
-    def point_over(self):
+    def point_over(self, player_won):
         self._vanish_illusions()
 
     # ---------------------------------------------------------------- every frame

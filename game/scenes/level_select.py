@@ -10,6 +10,7 @@ import pygame
 
 from game import controls
 from game import settings as S
+from game.audio import sfx
 from game.gfx.sprites import load_image, recolour_surface
 from game.gfx.text import BitmapFont
 from game.gfx.ui import dim, panel
@@ -69,11 +70,13 @@ class LevelSelectScene(Scene):
             self._move(1)
         elif controls.pressed(event, controls.CONFIRM):
             if self.app.progress.is_unlocked(self.index):
+                sfx.play("menu_select")
                 from game.scenes.match import Match  # avoids a circular import
 
                 self.app.switch(Match(self.index))
             else:
                 self.shake = SHAKE_TIME
+                sfx.play("menu_locked")
                 self.notice = f"Beat {LEVELS[self.index - 1].name} to unlock"
         elif controls.pressed(event, controls.BACK):
             from game.scenes.title import TitleScene
@@ -83,6 +86,7 @@ class LevelSelectScene(Scene):
     def _move(self, step):
         self.index = (self.index + step) % len(LEVELS)
         self.notice = ""
+        sfx.play("menu_move")
 
     def update(self, dt):
         self.shake = max(0.0, self.shake - dt)

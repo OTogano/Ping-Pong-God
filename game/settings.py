@@ -93,6 +93,26 @@ GLIDE_FRACTION = 0.8  # opponents who travel between spots take this share of yo
 # Each opponent's own numbers (smash, juggle, portals, rewind...) are at the top
 # of their file in game/opponents/.
 
+# Sound
+SFX_VOLUME = 0.8  # all sound effects (0..1)
+SFX_CHANNELS = 16  # how many sounds can play at once
+RETURN_BOUNCE_AT = (
+    0.55  # your return bounces on their half this far along its flight...
+)
+FAR_BOUNCE_VOLUME = 0.5  # ...a little quieter, being further away
+MIXER = (
+    44100,
+    -16,
+    2,
+    256,
+)  # rate, sample size, channels, buffer: a small buffer = sounds play without lag
+# Per-sound loudness, for evening out sounds from different sources (1.0 = as recorded).
+SOUND_VOLUMES = {
+    "bounce": 0.8,
+    "flip": 0.6,
+    "menu_move": 0.6,
+}
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key

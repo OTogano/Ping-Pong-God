@@ -20,7 +20,8 @@ def save_path():
 
 
 class Progress:
-    def __init__(self, beaten=None):
+    def __init__(self, beaten=None, muted=False):
+        self.muted = muted
         # beaten[i] is True once level i has been won at least once.
         self.beaten = list(beaten or [])[: len(LEVELS)]
         self.beaten += [False] * (len(LEVELS) - len(self.beaten))
@@ -49,7 +50,9 @@ def load():
     try:
         with open(save_path(), encoding="utf-8") as f:
             data = json.load(f)
-        return Progress([bool(b) for b in data.get("beaten", [])])
+        return Progress(
+            [bool(b) for b in data.get("beaten", [])], bool(data.get("muted", False))
+        )
     except (OSError, ValueError, AttributeError, TypeError):
         return Progress()
 
@@ -61,7 +64,7 @@ def save(progress):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:
-            json.dump({"beaten": progress.beaten}, f)
+            json.dump({"beaten": progress.beaten, "muted": progress.muted}, f)
         os.replace(tmp, path)  # swap in whole, so a crash can't leave half a file
     except OSError as err:
         print(f"Could not save progress: {err}")
