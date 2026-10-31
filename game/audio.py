@@ -23,12 +23,14 @@ class SoundEffects:
         self.enabled = False  # False if there's no audio device (the game still runs)
         self.muted = False
         self._sounds = {}  # name -> list of variants (empty list = not found)
+        self._ambience = None  # the stage's background loop now playing (its name)
 
     def init(self):
         """Start the mixer. Call before pygame.init() (pre_init) and after it (init)."""
         try:
             pygame.mixer.init()
             pygame.mixer.set_num_channels(S.SFX_CHANNELS)
+            pygame.mixer.set_reserved(1)  # channel 0 is kept for the ambience loop
             self.enabled = True
             folder = S.resource_path(os.path.join("assets", "sounds"))
             found = glob.glob(os.path.join(folder, "*.wav")) + glob.glob(
@@ -92,10 +94,30 @@ class SoundEffects:
             channel.set_volume(volume * S.SFX_VOLUME * S.SOUND_VOLUMES.get(name, 1.0))
         return channel
 
+    def ambience(self, name):
+        """Loop a stage's background sound (crowd, waves, wind...) quietly under everything.
+        Fades in; ambience(None) fades it out."""
+        self._ambience = name
+        if not self.enabled:
+            return
+        channel = pygame.mixer.Channel(0)
+        if name is None or self.muted:
+            channel.fadeout(S.AMBIENCE_FADE_MS)
+            return
+        variants = self._variants(name)
+        if variants:
+            loop = variants[0]
+            loop.set_volume(
+                S.AMBIENCE_VOLUME * S.SFX_VOLUME
+            )  # on the sound: a channel's volume resets on play
+            channel.play(loop, loops=-1, fade_ms=S.AMBIENCE_FADE_MS)
+
     def toggle_mute(self):
         self.muted = not self.muted
         if self.muted and self.enabled:
             pygame.mixer.stop()
+        elif self._ambience:
+            self.ambience(self._ambience)  # back on: the stage's loop comes back too
 
     # The pause menu freezes sounds that are still playing, and leaving a match stops them.
     def pause(self):
@@ -107,6 +129,7 @@ class SoundEffects:
             pygame.mixer.unpause()
 
     def stop_all(self):
+        self._ambience = None
         if self.enabled:
             pygame.mixer.stop()
             pygame.mixer.unpause()

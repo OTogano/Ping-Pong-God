@@ -95,6 +95,7 @@ class Match(Scene):
         self.duration = S.INTRO_TIME
         if self.opponent.intro_sound:
             sfx.play(self.opponent.intro_sound)
+        sfx.ambience(self.level.ambience)
 
     # ------------------------------------------------------------------ phases
     def set_phase(self, name, duration):
@@ -326,8 +327,26 @@ class Match(Scene):
         self.scoreboard.update(dt)
         self.keys.update(dt)
         self.stage_time += dt
-        for _, anim in self.props:
+        for prop, anim in self.props:
+            before = anim.index
             anim.update(dt)
+            if prop.sound and anim.index != before and anim.index in prop.frames:
+                sfx.play(
+                    prop.sound, volume=prop.volume
+                )  # e.g. a cannon on its fire frame
+            if (
+                prop.sound and prop.turn and prop.period
+            ):  # e.g. the sled reaching the end of its push
+                was = ((self.stage_time - dt) % prop.period) / prop.period
+                now = (self.stage_time % prop.period) / prop.period
+                if was < 0.5 <= now:
+                    sfx.play(prop.sound, volume=prop.volume)
+        for (
+            name,
+            every,
+        ) in self.level.random_sounds:  # now and then: a gull, a distant rumble...
+            if random.random() < dt / every:
+                sfx.play(name, volume=random.uniform(0.3, 0.8))  # near or far
         self.squash = max(0.0, self.squash - dt)
         self.opponent.update(dt)
         self.t += dt

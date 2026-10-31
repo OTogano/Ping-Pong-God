@@ -18,6 +18,10 @@ class Prop:
     y: int
     sweep_dy: int = 0
     period: float = 0.0
+    sound: str | None = None  # a sound this prop makes...
+    frames: tuple = ()  # ...on these animation frames (e.g. a cannon's fire frame)...
+    turn: bool = False  # ...or, for a sweeping prop, as it reaches the far end
+    volume: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -46,6 +50,10 @@ class Level:
         None  # where the scoreboard stands (None = settings.SCOREBOARD_POS)
     )
     props: tuple = ()  # animated people and things on the stage (see Prop)
+    ambience: str | None = (
+        None  # a looping background sound for the stage (assets/sounds/)
+    )
+    random_sounds: tuple = ()  # ((name, every_seconds), ...): played now and then, e.g. seagulls
 
 
 LEVELS = [
@@ -63,6 +71,7 @@ LEVELS = [
         sprite="coach_greg",
         portrait="coach_greg_portrait",
         background="gym_floor",
+        ambience="amb_school_gym",
     ),
     Level(
         name="Level 2",
@@ -77,10 +86,20 @@ LEVELS = [
         sprite="esmeralda",
         portrait="esmeralda_portrait",
         background="gym2_bg",
+        ambience="amb_gym",
         props=(
             Prop("gym_runner", 31, 16),  # on the second treadmill
             Prop("gym_stretch", 1, 139),  # yoga mat
-            Prop("gym_sled", 236, 44, sweep_dy=140, period=9.0),
+            Prop(
+                "gym_sled",
+                236,
+                44,
+                sweep_dy=140,
+                period=9.0,  # up and down the turf...
+                sound="gym_clank",
+                turn=True,
+                volume=0.7,
+            ),
         ),
     ),  # up and down the turf
     Level(
@@ -96,13 +115,17 @@ LEVELS = [
         sprite="squidy",
         portrait="squidy_portrait",
         background="ship_bg",
+        ambience="amb_ship",
+        random_sounds=(("seagull", 10.0),),  # a gull on average every 10 s
         scoreboard_pos=(30, 92),  # on the deck, clear of the rail and sea
         props=(
             Prop("ship_sea_l", 0, 0),  # waves rolling past the hull
             Prop("ship_sea_r", 233, 0),
-            Prop("ship_cannon_l", 0, 48),  # pirates firing cannons
-            Prop("ship_cannon_r", 192, 96),
-        ),
+            Prop(
+                "ship_cannon_l", 0, 48, sound="cannon", frames=(7,), volume=0.45
+            ),  # pirates firing cannons,
+            Prop("ship_cannon_r", 192, 96, sound="cannon", frames=(3,), volume=0.45),
+        ),  # boom on the fire frame
     ),
     Level(
         name="Level 4",
@@ -117,6 +140,11 @@ LEVELS = [
         sprite="bot",
         portrait="bot_portrait",
         background="lab_bg",
+        ambience="amb_lab",
+        random_sounds=(
+            ("lab_beep", 7.0),
+            ("lab_beam", 40.0),
+        ),  # equipment chirping; an experiment now and then
         props=(
             Prop("lab_flasks", 2, 50),  # bubbling on the bench
             Prop("lab_tesla", 228, 16),  # crackling
@@ -139,6 +167,7 @@ LEVELS = [
         sprite="pingpong_god",
         portrait="pingpong_god_portrait",
         background="throne_bg",
+        ambience="amb_storm",
         scoreboard_pos=(34, 92),
         props=(
             Prop("throne_runes", 0, 0),  # rune circles pulsing with light

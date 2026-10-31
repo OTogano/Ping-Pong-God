@@ -113,6 +113,9 @@ SOUND_VOLUMES = {
     "menu_move": 0.6,
 }
 
+AMBIENCE_VOLUME = 0.5  # stage background loops, relative to the effects
+AMBIENCE_FADE_MS = 800  # they fade in when a match starts and out when you leave
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key
