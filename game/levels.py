@@ -33,7 +33,12 @@ class Level:
     fly_time: float  # ball travel from opponent to the bounce on your half
     hit_window: float  # time after the bounce in which you must press
     return_time: float  # your return travelling back to the opponent
-    opponent_miss_chance: float  # chance the opponent misses each of your returns
+    # The opponent's chance to miss your return grows with each return in a rally
+    # (base, then +step per return, up to cap), so points end at a steady length
+    # instead of pure luck. It resets every point.
+    miss_base: float
+    miss_step: float
+    miss_cap: float
     kind: str | None = None  # their tricks: game/opponents/<kind>.py (None = none)
     true_name: str | None = None  # shown instead of `opponent` once you've beaten them
     hints_until_score: int = (
@@ -69,7 +74,9 @@ LEVELS = [
         fly_time=1.1,
         hit_window=0.6,
         return_time=0.8,
-        opponent_miss_chance=0.3,
+        miss_base=0.10,
+        miss_step=0.02,
+        miss_cap=0.9,
         hints_until_score=1,
         kind="greg",
         sprite="coach_greg",
@@ -86,7 +93,9 @@ LEVELS = [
         fly_time=0.9,
         hit_window=0.45,
         return_time=0.7,
-        opponent_miss_chance=0.2,
+        miss_base=0.08,
+        miss_step=0.03,
+        miss_cap=0.8,
         kind="esmeralda",
         sprite="esmeralda",
         portrait="esmeralda_portrait",
@@ -116,7 +125,9 @@ LEVELS = [
         fly_time=0.8,
         hit_window=0.4,
         return_time=0.6,
-        opponent_miss_chance=0.15,
+        miss_base=0.05,
+        miss_step=0.03,
+        miss_cap=0.7,
         kind="squidy",
         sprite="squidy",
         portrait="squidy_portrait",
@@ -142,7 +153,9 @@ LEVELS = [
         fly_time=0.7,
         hit_window=0.35,
         return_time=0.6,
-        opponent_miss_chance=0.2,
+        miss_base=0.04,
+        miss_step=0.03,
+        miss_cap=0.6,
         kind="bot",
         sprite="bot",
         portrait="bot_portrait",
@@ -170,7 +183,9 @@ LEVELS = [
         fly_time=0.6,
         hit_window=0.32,
         return_time=0.55,
-        opponent_miss_chance=0.25,
+        miss_base=0.03,
+        miss_step=0.02,
+        miss_cap=0.5,
         kind="odin",
         sprite="pingpong_god",
         portrait="pingpong_god_portrait",

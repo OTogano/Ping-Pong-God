@@ -87,6 +87,9 @@ EARLY_PRESS_IS_MISS = True
 SERVE_POSITION = 1  # opponent always serves from top left
 MISS_SHAKE = (3, 0.3)
 RETURN_FLASH = 0.25
+TRICK_RETURN_BONUS = (
+    0.0  # returning a trick shot adds this to the opponent's miss chance, once
+)
 
 TRAIL_LENGTH = 10  # how many past ball positions a flaming/glowing trail follows
 GLIDE_FRACTION = 0.8  # opponents who travel between spots take this share of your return to get there

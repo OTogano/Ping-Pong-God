@@ -88,6 +88,11 @@ class Match(Scene):
         self.flight = ((0.0, 0.0), (0.0, 0.0), 0.0)  # (start, end, arc height)
         self.won = self.unlocked = False  # set when the match ends
         self.bounced = False
+        self.returns = (
+            0  # your returns this point (the opponent's miss chance grows with them)
+        )
+        self.trick_shot = False  # was the shot you're returning set up by a trick?
+        self.miss_chance = 0.0
         self.opponent = make_opponent(self)  # their tricks: game/opponents/<kind>.py
         self._start_point()
         # First serve: show the level name and wait a little longer.
@@ -114,6 +119,8 @@ class Match(Scene):
         self.message = ""
         self.last_target = None
         self.speed = 1.0
+        self.returns = 0
+        self.trick_shot = False
         self.trail_colours = None
         self.opponent.reset()
         self.opp_anim.play("serve")  # e.g. Coach Greg blows his whistle
@@ -127,6 +134,10 @@ class Match(Scene):
         self.target = S.LANDING_FOR[self.opp_pos]
         opp = self.opponent
         opp.trick = None if after_trick else opp.choose_trick()
+        if opp.trick:
+            self.trick_shot = (
+                True  # stays set through a juggle or rewind to the final shot
+            )
         opp.trick_done = False
         if not after_trick:
             self.speed = 1.0
@@ -152,6 +163,15 @@ class Match(Scene):
         self.opponent.after_hit()
 
     def _player_returns(self):
+        # The longer the rally, the likelier they miss; beating a trick shot makes it likelier still.
+        lv = self.level
+        self.returns += 1
+        self.miss_chance = min(
+            lv.miss_cap, lv.miss_base + lv.miss_step * (self.returns - 1)
+        )
+        if self.trick_shot:
+            self.miss_chance += S.TRICK_RETURN_BONUS
+        self.trick_shot = False
         self.speed = 1.0
         self.trail_colours = None
         self.opponent.returned()
@@ -236,7 +256,7 @@ class Match(Scene):
         elif self.phase == "window":
             self.point(False, "Too late!")
         elif self.phase == "return":
-            if random.random() < self.level.opponent_miss_chance:
+            if random.random() < self.miss_chance:
                 self.point(True, "Opponent missed!")
             else:
                 self.begin_windup()
