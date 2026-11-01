@@ -74,6 +74,7 @@ class App:
                 self.top.handle_event(event)
 
             self.top.update(dt)
+            sfx.update(dt)  # starts the next music track once the old one has faded
             fx.update(dt)
 
             # Draw from the last full-screen scene up, so overlays sit on top.

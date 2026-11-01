@@ -96,6 +96,7 @@ class Match(Scene):
         if self.opponent.intro_sound:
             sfx.play(self.opponent.intro_sound)
         sfx.ambience(self.level.ambience)
+        sfx.music(self.level.music, volume=S.MUSIC_MATCH_VOLUME)
 
     # ------------------------------------------------------------------ phases
     def set_phase(self, name, duration):
@@ -188,6 +189,10 @@ class Match(Scene):
             if player_won and self.level.true_name:  # e.g. the hood comes down
                 self.message += f"\n{self.level.opponent} was {self.level.true_name}!"
             sfx.play("match_won" if player_won else "match_lost")
+            # The music fades so the jingle plays clean; beating the final boss earns the ending theme.
+            sfx.music(
+                self.level.win_music if player_won else None, after=S.MUSIC_AFTER_JINGLE
+            )
             self.opponent.match_over(player_won)
             if player_won and self.app:
                 self.unlocked = self.app.progress.mark_won(self.level_index)
@@ -201,6 +206,12 @@ class Match(Scene):
                     "wrong" if message == "Wrong side!" else "point_lost",
                     fallback="point_lost",
                 )
+                # Odin's music escalates with his tricks.
+                if (
+                    self.level.music_2
+                    and max(self.player_score, self.opp_score) >= self.level.music_2_at
+                ):
+                    sfx.music(self.level.music_2, volume=S.MUSIC_MATCH_VOLUME)
             self.set_phase("point", S.POINT_PAUSE)
 
     def _advance(self):

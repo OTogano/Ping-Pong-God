@@ -1,8 +1,9 @@
-"""Sound effects.
+"""Sound effects, stage ambience and music.
 
     sfx.play("hit")      plays assets/sounds/hit.wav (or .ogg). If there are
                          numbered variants (hit_1.wav, hit_2.wav, ...) it picks
                          one at random, so repeated sounds don't feel copy-pasted.
+    sfx.music("music_bot")  loops assets/music/music_bot.ogg, streamed from disk.
 
 A sound that isn't there yet is simply skipped, so the game runs fine with an
 incomplete set: drop new files into assets/sounds/ and they're used next launch.
@@ -24,6 +25,12 @@ class SoundEffects:
         self.muted = False
         self._sounds = {}  # name -> list of variants (empty list = not found)
         self._ambience = None  # the stage's background loop now playing (its name)
+        self._music = None  # the track that's playing, or about to (its name)
+        self._music_volume = S.MUSIC_VOLUME
+        self._next = (
+            None  # (name, volume, wait): starts once the old track has faded out
+        )
+        self._paused = False
 
     def init(self):
         """Start the mixer. Call before pygame.init() (pre_init) and after it (init)."""
@@ -78,7 +85,7 @@ class SoundEffects:
         """Play a sound; returns its channel (to stop it early) or None.
         fallback: another sound to use if this one isn't there (e.g. "return" -> "hit").
         last: play only the final `last` seconds, so a build-up peaks right on time
-            (BOT's charge whine peaks exactly as he fires, however long he charges)."""
+              (BOT's charge whine peaks exactly as he fires, however long he charges)."""
         if not self.enabled or self.muted:
             return None
         variants = self._variants(name) or (
@@ -112,27 +119,78 @@ class SoundEffects:
             )  # on the sound: a channel's volume resets on play
             channel.play(loop, loops=-1, fade_ms=S.AMBIENCE_FADE_MS)
 
+    # ---------------------------------------------------------------- music
+    def music(self, name, volume=None, after=0.0):
+        """Loop assets/music/<name>.ogg, streamed from disk.
+        The old track fades out, then the new one fades in. Asking for the track
+        that's already playing just keeps it going (at the new volume).
+        after: wait this many seconds before starting (e.g. let a jingle finish).
+        music(None) fades the music out."""
+        volume = S.MUSIC_VOLUME if volume is None else volume
+        if not self.enabled:
+            return
+        if name == self._music and self._next is None:
+            self._music_volume = volume
+            pygame.mixer.music.set_volume(0 if self.muted else volume)
+            return
+        self._music = name
+        self._next = (name, volume, after) if name else None
+        pygame.mixer.music.fadeout(S.MUSIC_FADE_OUT_MS)
+
+    def _start_music(self, name, volume):
+        path = S.resource_path(os.path.join("assets", "music", f"{name}.ogg"))
+        if not os.path.exists(path):
+            print(f"No music file {path}")
+            return
+        try:
+            pygame.mixer.music.load(path)
+        except pygame.error as err:
+            print(f"Could not load {path}: {err}")
+            return
+        self._music_volume = volume
+        pygame.mixer.music.set_volume(0 if self.muted else volume)
+        pygame.mixer.music.play(loops=-1, fade_ms=S.MUSIC_FADE_IN_MS)
+
+    def update(self, dt):
+        """Call once a frame: starts the next track when the old one has faded out."""
+        if not self.enabled or self._next is None or self._paused:
+            return
+        if pygame.mixer.music.get_busy():  # still fading out
+            return
+        name, volume, wait = self._next
+        if wait > 0:
+            self._next = (name, volume, wait - dt)
+            return
+        self._next = None
+        self._start_music(name, volume)
+
     def toggle_mute(self):
         self.muted = not self.muted
+        if self.enabled:
+            pygame.mixer.music.set_volume(0 if self.muted else self._music_volume)
         if self.muted and self.enabled:
             pygame.mixer.stop()
         elif self._ambience:
             self.ambience(self._ambience)  # back on: the stage's loop comes back too
 
-    # The pause menu freezes sounds that are still playing, and leaving a match stops them.
+    # The pause menu freezes sounds and music, and leaving a match stops the sounds.
     def pause(self):
         if self.enabled:
             pygame.mixer.pause()
+            pygame.mixer.music.pause()
+            self._paused = True
 
     def unpause(self):
         if self.enabled:
             pygame.mixer.unpause()
+            pygame.mixer.music.unpause()
+            self._paused = False
 
     def stop_all(self):
         self._ambience = None
         if self.enabled:
             pygame.mixer.stop()
-            pygame.mixer.unpause()
+            self.unpause()  # the music carries on; the next scene picks its track
 
 
 sfx = SoundEffects()

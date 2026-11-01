@@ -14,6 +14,7 @@ class TitleScene(Scene):
         self.background = load_image("ui", "title_bg.png")
         self.logo = load_image("ui", "logo.png")
         self.time = 0.0
+        sfx.music("music_title")
 
     def handle_event(self, event):
         if not self.app:

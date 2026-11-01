@@ -54,6 +54,10 @@ class Level:
         None  # a looping background sound for the stage (assets/sounds/)
     )
     random_sounds: tuple = ()  # ((name, every_seconds), ...): played now and then, e.g. seagulls
+    music: str | None = None  # assets/music/<music>.ogg, looping during the match
+    music_2: str | None = None  # switches to this once either score reaches music_2_at
+    music_2_at: int = 0
+    win_music: str | None = None  # plays after the jingle when you win
 
 
 LEVELS = [
@@ -72,6 +76,7 @@ LEVELS = [
         portrait="coach_greg_portrait",
         background="gym_floor",
         ambience="amb_school_gym",
+        music="music_tutorial",
     ),
     Level(
         name="Level 2",
@@ -87,6 +92,7 @@ LEVELS = [
         portrait="esmeralda_portrait",
         background="gym2_bg",
         ambience="amb_gym",
+        music="music_esmeralda",
         props=(
             Prop("gym_runner", 31, 16),  # on the second treadmill
             Prop("gym_stretch", 1, 139),  # yoga mat
@@ -116,6 +122,7 @@ LEVELS = [
         portrait="squidy_portrait",
         background="ship_bg",
         ambience="amb_ship",
+        music="music_squidy",
         random_sounds=(("seagull", 10.0),),  # a gull on average every 10 s
         scoreboard_pos=(30, 92),  # on the deck, clear of the rail and sea
         props=(
@@ -141,6 +148,7 @@ LEVELS = [
         portrait="bot_portrait",
         background="lab_bg",
         ambience="amb_lab",
+        music="music_bot",
         random_sounds=(
             ("lab_beep", 7.0),
             ("lab_beam", 40.0),
@@ -168,6 +176,10 @@ LEVELS = [
         portrait="pingpong_god_portrait",
         background="throne_bg",
         ambience="amb_storm",
+        music="music_boss",
+        music_2="music_boss_2",
+        music_2_at=5,
+        win_music="music_ending",
         scoreboard_pos=(34, 92),
         props=(
             Prop("throne_runes", 0, 0),  # rune circles pulsing with light
