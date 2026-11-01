@@ -186,7 +186,7 @@ and is saved. Volumes are in `settings.py`. Sources and licences are in
 - [x] Final boss
 - [x] Opponents split into their own modules
 - [x] Audio: sound effects, stage ambience and music
-- [ ] Balance pass across all five levels
+- [x] Balance pass across all five levels
 
 ## Built with
 
