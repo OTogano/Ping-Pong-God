@@ -9,6 +9,7 @@ pause menu is drawn on top of the frozen match below it.
     app.pop()          - close the top overlay
 """
 
+import os
 import sys
 
 import pygame
@@ -26,6 +27,10 @@ class App:
         pygame.init()
         sfx.init()
         pygame.display.set_caption(S.TITLE)
+        # The window and taskbar icon (before the window opens, so every platform picks it up).
+        icon_path = S.resource_path(os.path.join("assets", "ui", "icon.png"))
+        if os.path.exists(icon_path):
+            pygame.display.set_icon(pygame.image.load(icon_path))
         self.renderer = create_renderer((S.WIDTH * S.SCALE, S.HEIGHT * S.SCALE))
         print(f"Renderer: {self.renderer.name}")
         # We draw everything on this small canvas; the renderer scales it up
