@@ -30,6 +30,7 @@ from game.gfx.ui import KeyIcons, Scoreboard
 from game.levels import LEVELS
 from game.opponents import make_opponent
 from game.scenes.base import Scene
+from game.scenes.credits import CreditsScene
 from game.scenes.level_select import LevelSelectScene
 from game.scenes.pause import PauseScene
 from game.scenes.result import ResultScene
@@ -284,6 +285,7 @@ class Match(Scene):
                 next_level=None if last else self.next_level,
                 unlocked=LEVELS[self.level_index + 1].name if self.unlocked else None,
                 champion=self.won and last,
+                credits=self.credits if self.won and last else None,
             )
         )
 
@@ -302,6 +304,15 @@ class Match(Scene):
         sfx.stop_all()
         if self.app:
             self.app.switch(LevelSelectScene(self.level_index))
+
+    def credits(self):
+        sfx.stop_all()
+        if self.app:
+            self.app.switch(
+                CreditsScene(
+                    then=lambda: LevelSelectScene(self.level_index), revealed=True
+                )
+            )
 
     def handle_event(self, event):
         if event.type != pygame.KEYDOWN:

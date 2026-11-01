@@ -96,6 +96,7 @@ game/
     match.py             # one match: rally state machine, input, scoring, drawing
     pause.py             # pause menu (overlay)
     result.py            # win / lose screen (overlay)
+    credits.py           # the credit roll: cast, music, sounds, tools
   opponents/
     base.py              # Opponent: the hooks the match calls (choose a trick, on hit, mid-flight, draw...)
     greg.py              # belly bump
