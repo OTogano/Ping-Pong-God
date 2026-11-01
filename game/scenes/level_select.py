@@ -51,6 +51,7 @@ class LevelSelectScene(Scene):
         self.shake = 0.0
         self.notice = ""
         self.scroll = self._row_x()  # x of the first card; slides toward _row_x()
+        sfx.music("music_select")
 
     def _row_x(self):
         """Where the first card should be so the selected one is on screen (centred if possible)."""

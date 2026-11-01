@@ -237,6 +237,7 @@ class Odin(Opponent):
             x = min(max(x + random.randint(-5, 5), 2), S.WIDTH - 3)
             self.bolt.append((x, y))
         self.bolt_t = LIGHTNING_TIME
+        sfx.play("thunder", volume=random.uniform(0.4, 0.8))  # near or far
         if self.m.phase not in (
             "incoming",
             "window",

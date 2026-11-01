@@ -113,6 +113,17 @@ SOUND_VOLUMES = {
     "menu_move": 0.6,
 }
 
+AMBIENCE_VOLUME = 0.5  # stage background loops, relative to the effects
+AMBIENCE_FADE_MS = 800  # they fade in when a match starts and out when you leave
+
+MUSIC_VOLUME = 0.5  # music on the title and level select (0..1)
+MUSIC_MATCH_VOLUME = (
+    0.35  # quieter in matches, so it never covers the hits you react to
+)
+MUSIC_FADE_OUT_MS = 0
+MUSIC_FADE_IN_MS = 0
+MUSIC_AFTER_JINGLE = 2.5  # seconds the win music waits for the match-won jingle
+
 # HUD and feedback
 KEY_PRESS_SHOW = 0.1  # how long a key icon shows as pressed
 KEY_RING_BLINK = 4  # blinks per second of the ring around the lit key

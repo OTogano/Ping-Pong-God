@@ -95,6 +95,8 @@ class Match(Scene):
         self.duration = S.INTRO_TIME
         if self.opponent.intro_sound:
             sfx.play(self.opponent.intro_sound)
+        sfx.ambience(self.level.ambience)
+        sfx.music(self.level.music, volume=S.MUSIC_MATCH_VOLUME)
 
     # ------------------------------------------------------------------ phases
     def set_phase(self, name, duration):
@@ -187,6 +189,10 @@ class Match(Scene):
             if player_won and self.level.true_name:  # e.g. the hood comes down
                 self.message += f"\n{self.level.opponent} was {self.level.true_name}!"
             sfx.play("match_won" if player_won else "match_lost")
+            # The music fades so the jingle plays clean; beating the final boss earns the ending theme.
+            sfx.music(
+                self.level.win_music if player_won else None, after=S.MUSIC_AFTER_JINGLE
+            )
             self.opponent.match_over(player_won)
             if player_won and self.app:
                 self.unlocked = self.app.progress.mark_won(self.level_index)
@@ -200,6 +206,12 @@ class Match(Scene):
                     "wrong" if message == "Wrong side!" else "point_lost",
                     fallback="point_lost",
                 )
+                # Odin's music escalates with his tricks.
+                if (
+                    self.level.music_2
+                    and max(self.player_score, self.opp_score) >= self.level.music_2_at
+                ):
+                    sfx.music(self.level.music_2, volume=S.MUSIC_MATCH_VOLUME)
             self.set_phase("point", S.POINT_PAUSE)
 
     def _advance(self):
@@ -326,8 +338,26 @@ class Match(Scene):
         self.scoreboard.update(dt)
         self.keys.update(dt)
         self.stage_time += dt
-        for _, anim in self.props:
+        for prop, anim in self.props:
+            before = anim.index
             anim.update(dt)
+            if prop.sound and anim.index != before and anim.index in prop.frames:
+                sfx.play(
+                    prop.sound, volume=prop.volume
+                )  # e.g. a cannon on its fire frame
+            if (
+                prop.sound and prop.turn and prop.period
+            ):  # e.g. the sled reaching the end of its push
+                was = ((self.stage_time - dt) % prop.period) / prop.period
+                now = (self.stage_time % prop.period) / prop.period
+                if was < 0.5 <= now:
+                    sfx.play(prop.sound, volume=prop.volume)
+        for (
+            name,
+            every,
+        ) in self.level.random_sounds:  # now and then: a gull, a distant rumble...
+            if random.random() < dt / every:
+                sfx.play(name, volume=random.uniform(0.3, 0.8))  # near or far
         self.squash = max(0.0, self.squash - dt)
         self.opponent.update(dt)
         self.t += dt
