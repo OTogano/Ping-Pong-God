@@ -21,6 +21,7 @@ class ResultScene(Scene):
         next_level=None,
         unlocked=None,
         champion=False,
+        credits=None,
     ):
         """won: did the player win. score: e.g. "3 - 1".
         retry / level_select / next_level: functions for the menu options
@@ -34,6 +35,10 @@ class ResultScene(Scene):
         items = []
         if won and next_level:
             items.append(("Continue", next_level))
+        elif won and credits:
+            items.append(
+                ("Continue", credits)
+            )  # after the final boss: roll the credits
         items.append(("Play again" if won else "Retry", retry))
         items.append(("Level select", level_select))
         self.menu = Menu(items)

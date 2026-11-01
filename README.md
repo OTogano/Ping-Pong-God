@@ -67,12 +67,16 @@ python main.py
 ## Building the .exe
 
 ```bash
-pyinstaller --clean --onefile --windowed --name PingPongGod --add-data "assets;assets" main.py
+pyinstaller --clean --onefile --windowed --name PingPongGod --icon assets/icon.ico --add-data "assets;assets" main.py
 ```
 
 The executable is created in `dist/`. `--add-data` bundles the art, sounds and
-music into the exe (on macOS/Linux write `assets:assets`). `--clean` stops
-PyInstaller reusing an old build that's missing new assets.
+music into the exe (on macOS/Linux write `assets:assets`). `--icon` gives the
+exe the Ping Pong God icon. `--clean` stops PyInstaller reusing an old build
+that's missing new assets.
+
+If Windows still shows the old icon after a rebuild, it's a cached copy:
+rename the exe or move it to another folder.
 
 ## Project layout
 
@@ -92,6 +96,7 @@ game/
     match.py             # one match: rally state machine, input, scoring, drawing
     pause.py             # pause menu (overlay)
     result.py            # win / lose screen (overlay)
+    credits.py           # the credit roll: cast, music, sounds, tools
   opponents/
     base.py              # Opponent: the hooks the match calls (choose a trick, on hit, mid-flight, draw...)
     greg.py              # belly bump
@@ -106,17 +111,18 @@ game/
     renderer.py          # OpenGL (ModernGL) renderer + software fallback
     effects.py           # shake, flash, shockwave ripple, rewind, CRT toggle
     geometry.py          # lerp and Bezier curves
-assets/
-  sprites/               # characters, stage props and portraits (sheet .png + Aseprite .json)
-  backgrounds/           # one stage per level
-  ui/                    # title, logo, flip-board, digits, key icons, pixel font
-  sounds/                # sound effects and stage ambience (.wav / .ogg)
-  music/                 # looping music tracks (.ogg)
-  palettes/
-    nes_palette.hex      # game palette, also loadable in Aseprite
-  shaders/
-    present.vert         # full-screen quad + screen shake
-    present.frag         # flash, shockwave ripple, rewind (sepia + wave), CRT
+  assets/
+    icon.ico               # the exe's icon (all Windows sizes)
+    sprites/               # characters, stage props and portraits (sheet .png + Aseprite .json)
+    backgrounds/           # one stage per level
+    ui/                    # title, logo, flip-board, digits, key icons, pixel font, window icon
+    sounds/                # sound effects and stage ambience (.wav / .ogg)
+    music/                 # looping music tracks (.ogg)
+    palettes/
+      nes_palette.hex      # game palette, also loadable in Aseprite
+    shaders/
+      present.vert         # full-screen quad + screen shake
+      present.frag         # flash, shockwave ripple, rewind (sepia + wave), CRT
 ```
 
 ### Adding an opponent

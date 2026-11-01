@@ -1,5 +1,7 @@
 """Title screen: the character close-up, the logo and "Press Enter"."""
 
+import pygame
+
 from game import controls
 from game import settings as S
 from game.audio import sfx
@@ -28,6 +30,13 @@ class TitleScene(Scene):
             self.app.switch(LevelSelectScene(self.app.progress.next_to_play()))
         elif controls.pressed(event, controls.BACK):
             self.app.quit()
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+            sfx.play("menu_select")
+            from game.scenes.credits import CreditsScene  # avoids a circular import
+
+            self.app.switch(
+                CreditsScene(then=TitleScene, revealed=self.app.progress.beaten[-1])
+            )
 
     def update(self, dt):
         self.time += dt
@@ -39,4 +48,12 @@ class TitleScene(Scene):
             self.font.draw(surf, "Press Enter", (S.WIDTH // 2, 68))
         self.font.draw(
             surf, "Esc: quit", (4, S.HEIGHT - 10), align="left", color=S.COL_MENU_DIM
+        )
+        hint = "C: credits"
+        self.font.draw(
+            surf,
+            hint,
+            (S.WIDTH - 4 - self.font.width(hint), S.HEIGHT - 10),
+            align="left",
+            color=S.COL_MENU_DIM,
         )
